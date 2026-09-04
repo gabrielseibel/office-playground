@@ -11,7 +11,11 @@ const basePath = isGithubActions ? `/${repoName}` : "";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  // Strict Mode só afeta o modo de desenvolvimento (a build de produção já
+  // renderiza uma vez só) — mas em dev ele renderiza cada componente e roda
+  // cada efeito em dobro de propósito, o que deixava a navegação local mais
+  // pesada do que o site realmente é depois de publicado.
+  reactStrictMode: false,
   output: "export",
   basePath,
   images: {
