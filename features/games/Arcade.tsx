@@ -500,12 +500,6 @@ export function Arcade() {
                     onClick={() => setActive(g.id)}
                     className="group relative overflow-hidden rounded-3xl border border-white/20 bg-white/90 p-6 text-left shadow-soft transition dark:border-white/10 dark:bg-white/10"
                   >
-                    <div
-                      className={cn(
-                        "absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br opacity-25 blur-2xl transition-opacity group-hover:opacity-50",
-                        g.color
-                      )}
-                    />
                     <div className="flex items-center justify-between">
                       <div
                         className={cn(
