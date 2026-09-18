@@ -509,8 +509,11 @@ export function Arcade() {
                       >
                         {g.emoji}
                       </div>
-                      <span className="text-xs">
-                        {g.difficulty === "facil" ? "🟢" : g.difficulty === "medio" ? "🟡" : "🔴"}
+                      <span className="inline-flex items-center gap-1 rounded-full bg-black/5 px-2 py-0.5 text-[11px] font-medium text-foreground/70 dark:bg-white/10">
+                        <span aria-hidden="true">
+                          {g.difficulty === "facil" ? "🟢" : g.difficulty === "medio" ? "🟡" : "🔴"}
+                        </span>
+                        {g.difficulty === "facil" ? "Fácil" : g.difficulty === "medio" ? "Médio" : "Difícil"}
                       </span>
                     </div>
                     <h3 className="mt-4 text-lg font-semibold">{g.title}</h3>

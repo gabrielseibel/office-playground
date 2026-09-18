@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ACHIEVEMENT_EVENT, LEVELUP_EVENT } from "@/lib/progress";
 import { ACHIEVEMENTS } from "@/data/achievements";
 
@@ -18,6 +18,8 @@ interface Popup {
 export function AchievementListener() {
   const [queue, setQueue] = React.useState<Popup[]>([]);
   const current = queue[0];
+  const prefersReducedMotion = useReducedMotion();
+  const dismissButtonRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
     function onAchievement(e: Event) {
@@ -60,6 +62,16 @@ export function AchievementListener() {
     setQueue((q) => q.slice(1));
   }
 
+  React.useEffect(() => {
+    if (!current) return;
+    dismissButtonRef.current?.focus();
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") dismiss();
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [current]);
+
   return (
     <AnimatePresence>
       {current && (
@@ -71,34 +83,37 @@ export function AchievementListener() {
           className="fixed inset-0 z-[100] grid place-items-center bg-black/50 p-4 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
+          aria-labelledby="achievement-title"
         >
-          {/* Confetti */}
-          <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            {Array.from({ length: 24 }).map((_, i) => (
-              <motion.span
-                key={i}
-                className="absolute text-2xl"
-                initial={{
-                  top: "-10%",
-                  left: `${Math.random() * 100}%`,
-                  rotate: 0,
-                  opacity: 1,
-                }}
-                animate={{
-                  top: "110%",
-                  rotate: Math.random() > 0.5 ? 360 : -360,
-                  opacity: 0,
-                }}
-                transition={{
-                  duration: 2 + Math.random() * 1.5,
-                  delay: Math.random() * 0.4,
-                  ease: "easeIn",
-                }}
-              >
-                {CONFETTI_EMOJI[i % CONFETTI_EMOJI.length]}
-              </motion.span>
-            ))}
-          </div>
+          {/* Confetti (skipped when the user prefers reduced motion) */}
+          {!prefersReducedMotion && (
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+              {Array.from({ length: 24 }).map((_, i) => (
+                <motion.span
+                  key={i}
+                  className="absolute text-2xl"
+                  initial={{
+                    top: "-10%",
+                    left: `${Math.random() * 100}%`,
+                    rotate: 0,
+                    opacity: 1,
+                  }}
+                  animate={{
+                    top: "110%",
+                    rotate: Math.random() > 0.5 ? 360 : -360,
+                    opacity: 0,
+                  }}
+                  transition={{
+                    duration: 2 + Math.random() * 1.5,
+                    delay: Math.random() * 0.4,
+                    ease: "easeIn",
+                  }}
+                >
+                  {CONFETTI_EMOJI[i % CONFETTI_EMOJI.length]}
+                </motion.span>
+              ))}
+            </div>
+          )}
 
           <motion.div
             initial={{ scale: 0.7, y: 30 }}
@@ -118,12 +133,15 @@ export function AchievementListener() {
             >
               {current.icon}
             </motion.div>
-            <h3 className="mt-4 text-xl font-bold">{current.name}</h3>
+            <h3 id="achievement-title" className="mt-4 text-xl font-bold">
+              {current.name}
+            </h3>
             <p className="mt-2 text-sm text-muted-foreground">{current.description}</p>
             {current.kind === "achievement" && (
               <p className="mt-2 text-sm font-semibold text-amber-600 dark:text-amber-400">+100 XP</p>
             )}
             <button
+              ref={dismissButtonRef}
               onClick={dismiss}
               className="mt-6 w-full rounded-xl bg-foreground px-4 py-2.5 text-sm font-semibold text-background transition hover:opacity-90"
             >
