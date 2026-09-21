@@ -58,7 +58,7 @@ const SIZES = [14, 16, 18, 22, 28, 36, 48, 64];
 
 const TIPS = [
   "Selecione o texto antes de aplicar qualquer formatação!",
-  "Use Ctrl+B para negrito rápido, Ctrl+I para itálico.",
+  "Use Ctrl+N para negrito rápido, Ctrl+I para itálico.",
   "Itens de lista com marcadores são ótimos para organizar tópicos.",
   "Centralize títulos e justifique parágrafos longos.",
   "Pressione Ctrl+Z se não gostar da mudança — o Word sempre deixa voltar.",
@@ -220,13 +220,13 @@ export function WordLab() {
                     </select>
                   </div>
                   <div className="flex items-center gap-0.5">
-                    <RibbonIconButton active={bold} onClick={() => setBold((b) => !b)} label="Negrito (Ctrl+B)">
+                    <RibbonIconButton active={bold} onClick={() => setBold((b) => !b)} label="Negrito (Ctrl+N)">
                       <Bold className="h-3.5 w-3.5" />
                     </RibbonIconButton>
                     <RibbonIconButton active={italic} onClick={() => setItalic((i) => !i)} label="Itálico (Ctrl+I)">
                       <Italic className="h-3.5 w-3.5" />
                     </RibbonIconButton>
-                    <RibbonIconButton active={underline} onClick={() => setUnderline((u) => !u)} label="Sublinhado (Ctrl+U)">
+                    <RibbonIconButton active={underline} onClick={() => setUnderline((u) => !u)} label="Sublinhado (Ctrl+S)">
                       <Underline className="h-3.5 w-3.5" />
                     </RibbonIconButton>
                     <RibbonIconButton active={!!highlight} onClick={() => setHighlight((h) => (h ? undefined : "#fde68a"))} label="Realce">
@@ -361,8 +361,8 @@ export function WordLab() {
             <MiniChallenge
               question="Qual atalho aplica negrito no texto selecionado?"
               options={["Ctrl + I", "Ctrl + B", "Ctrl + U", "Ctrl + N"]}
-              correctIndex={1}
-              explanation="Ctrl + B (de 'Bold') ativa e desativa o negrito instantaneamente."
+              correctIndex={3}
+              explanation="No Word (Microsoft 365 em português), Ctrl + N ativa e desativa o negrito. Ctrl + B é o atalho de salvar."
               app="word"
             />
           </motion.aside>

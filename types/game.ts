@@ -1,4 +1,4 @@
-export type AppId = "word" | "excel" | "ppt" | "geral";
+export type AppId = "word" | "excel" | "ppt" | "geral" | "info";
 
 export type Difficulty = "facil" | "medio" | "dificil";
 

@@ -13,6 +13,7 @@ const TOTALS = {
   word: ACTIVITIES.filter((a) => a.app === "word").length,
   excel: ACTIVITIES.filter((a) => a.app === "excel").length,
   ppt: ACTIVITIES.filter((a) => a.app === "ppt").length,
+  info: ACTIVITIES.filter((a) => a.app === "info").length,
 };
 
 export function AchievementsPage() {
@@ -54,6 +55,7 @@ export function AchievementsPage() {
               <JourneyRow emoji="📝" label="Word" value={state.correctByApp.word} total={TOTALS.word} color="bg-blue-500" />
               <JourneyRow emoji="📊" label="Excel" value={state.correctByApp.excel} total={TOTALS.excel} color="bg-emerald-500" />
               <JourneyRow emoji="🎨" label="PowerPoint" value={state.correctByApp.ppt} total={TOTALS.ppt} color="bg-orange-500" />
+              <JourneyRow emoji="💻" label="Informática" value={state.correctByApp.info} total={TOTALS.info} color="bg-teal-500" />
               <JourneyRow
                 emoji="🏆"
                 label="Desafio Mestre"

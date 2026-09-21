@@ -18,7 +18,14 @@ import { ExcelFillGame } from "@/components/game/ExcelFillGame";
 import { LightningPresentation } from "@/components/game/LightningPresentation";
 import { MemoryMatch } from "@/components/game/MemoryMatch";
 import { activitiesFor, ACTIVITIES } from "@/data/activities";
-import { WORD_MEMORY_PAIRS, EXCEL_MEMORY_PAIRS, PPT_MEMORY_PAIRS, MIXED_MEMORY_PAIRS } from "@/data/memoryPairs";
+import { INFO_CATEGORIES } from "@/data/activitiesInfo";
+import {
+  WORD_MEMORY_PAIRS,
+  EXCEL_MEMORY_PAIRS,
+  PPT_MEMORY_PAIRS,
+  MIXED_MEMORY_PAIRS,
+  INFO_MEMORY_PAIRS,
+} from "@/data/memoryPairs";
 import {
   DragGame,
   MemoryGame,
@@ -77,6 +84,70 @@ function SingleActivityGame({ activityId }: { activityId: string }) {
   );
 }
 
+function infoQuiz(
+  id: string,
+  category: string,
+  difficulty: Difficulty,
+  title: string,
+  description: string,
+  emoji: string
+): GameDef {
+  return {
+    id: `info-${id}`,
+    app: "info",
+    difficulty,
+    title,
+    description,
+    emoji,
+    color: "from-teal-500 to-cyan-700",
+    render: () => (
+      <QuizRunner
+        length={10}
+        activities={activitiesFor("info", "todas").filter((a) => a.category === category)}
+      />
+    ),
+  };
+}
+
+const INFO_GAMES: GameDef[] = [
+  infoQuiz("arquivos", INFO_CATEGORIES.arquivos, "facil", "Sistema e Arquivos", "Pastas, extensões, área de transferência e Painel de Controle.", "📁"),
+  infoQuiz("utilitarios", INFO_CATEGORIES.utilitarios, "facil", "Utilitários", "Antivírus, leitor de PDF, compactador, reprodutor e navegador: para que serve cada um.", "🧰"),
+  infoQuiz("internet", INFO_CATEGORIES.internet, "facil", "Internet e Navegadores", "Domínio, https, download, upload, roteador e como pesquisar direito.", "🌐"),
+  infoQuiz("seguranca", INFO_CATEGORIES.seguranca, "medio", "Segurança Digital", "Senhas, phishing, malware, backup e boas práticas na internet.", "🛡️"),
+  infoQuiz("hardware", INFO_CATEGORIES.hardware, "medio", "Hardware e Periféricos", "Entrada e saída, RAM, processador, drivers, licenças e BIOS.", "🖥️"),
+  infoQuiz("email", INFO_CATEGORIES.email, "medio", "E-mail e Agenda", "Arquivar x excluir, grupos, marcadores, filtros, assinatura e eventos.", "📧"),
+  infoQuiz("nuvem", INFO_CATEGORIES.nuvem, "medio", "Nuvem e Google", "Drive, compartilhamento, Docs, Forms e trabalho colaborativo.", "☁️"),
+  infoQuiz("formulas", INFO_CATEGORIES.planilhas, "medio", "Revisão de Fórmulas", "SOMA, MÉDIA, MAIOR, SE, CONT.SE, SOMASE e alça de preenchimento.", "🧮"),
+  infoQuiz("abnt", INFO_CATEGORIES.abnt, "medio", "Word no Padrão ABNT", "Fonte, margens, espaçamento, recuo, alinhamento e numeração.", "📐"),
+  infoQuiz("ia", INFO_CATEGORIES.ia, "facil", "IA no Escritório", "Prompt, ética, plágio e como usar a IA sem cair em armadilhas.", "🤖"),
+  infoQuiz("marketing", INFO_CATEGORIES.marketing, "medio", "Marketing e Mídias Sociais", "Funil, persona, KPI, CPC, CPM, lead, landing page e inbound.", "📣"),
+  {
+    id: "info-memoria",
+    app: "info",
+    difficulty: "facil",
+    title: "Memória do Escritório",
+    description: "Combine cada ferramenta com a sua função: antivírus, roteador, backup e mais.",
+    emoji: "🧠",
+    color: "from-teal-500 to-cyan-700",
+    render: () => <MemoryMatch pairs={INFO_MEMORY_PAIRS} app="info" />,
+  },
+  {
+    id: "info-desafio",
+    app: "info",
+    difficulty: "dificil",
+    title: "Desafio da Informática",
+    description: "15 perguntas sorteadas de todo o conteúdo de Informática Básica e Essencial.",
+    emoji: "🏁",
+    color: "from-teal-500 to-cyan-700",
+    render: () => (
+      <QuizRunner
+        length={15}
+        activities={activitiesFor("info", "todas").filter((a) => a.type === "mcq" || a.type === "true-false")}
+      />
+    ),
+  },
+];
+
 const GAMES: GameDef[] = [
   // WORD
   {
@@ -124,10 +195,20 @@ const GAMES: GameDef[] = [
     app: "word",
     difficulty: "facil",
     title: "Word Memory",
-    description: "Encontre os pares: NEGRITO ↔ Ctrl+B, COPIAR ↔ Ctrl+C e mais.",
+    description: "Encontre os pares: NEGRITO ↔ Ctrl+N, SALVAR ↔ Ctrl+B e mais.",
     emoji: "🧠",
     color: "from-blue-500 to-indigo-700",
     render: () => <MemoryMatch pairs={WORD_MEMORY_PAIRS} app="word" />,
+  },
+  {
+    id: "atalhos-word",
+    app: "word",
+    difficulty: "medio",
+    title: "Atalhos do Word",
+    description: "Salvar, abrir, negrito, centralizar… os atalhos do Word no Microsoft 365.",
+    emoji: "⌨️",
+    color: "from-blue-500 to-indigo-700",
+    render: () => <QuizRunner length={10} activities={activitiesFor("word", "todas").filter((a) => a.category === "atalhos")} />,
   },
 
   // EXCEL
@@ -201,6 +282,16 @@ const GAMES: GameDef[] = [
     color: "from-emerald-500 to-green-700",
     render: () => <PlanGame />,
   },
+  {
+    id: "atalhos-excel",
+    app: "excel",
+    difficulty: "medio",
+    title: "Atalhos do Excel",
+    description: "Guias com Alt, ocultar linhas e colunas, salvar e mais — no Microsoft 365.",
+    emoji: "⌨️",
+    color: "from-emerald-500 to-green-700",
+    render: () => <QuizRunner length={10} activities={activitiesFor("excel", "todas").filter((a) => a.category === "atalhos")} />,
+  },
 
   // POWERPOINT
   {
@@ -263,6 +354,19 @@ const GAMES: GameDef[] = [
     color: "from-orange-500 to-red-600",
     render: () => <MemoryMatch pairs={PPT_MEMORY_PAIRS} app="ppt" />,
   },
+  {
+    id: "atalhos-ppt",
+    app: "ppt",
+    difficulty: "medio",
+    title: "Atalhos do PowerPoint",
+    description: "Novo slide, F5, Page Down, hiperlink… os atalhos do PowerPoint no Microsoft 365.",
+    emoji: "⌨️",
+    color: "from-orange-500 to-red-600",
+    render: () => <QuizRunner length={10} activities={activitiesFor("ppt", "todas").filter((a) => a.category === "atalhos")} />,
+  },
+
+  // INFORMÁTICA BÁSICA E ESSENCIAL
+  ...INFO_GAMES,
 
   // GERAL
   {
@@ -362,6 +466,7 @@ const APP_TABS: { id: AppFilter; label: string; emoji: string }[] = [
   { id: "word", label: "Word", emoji: "📝" },
   { id: "excel", label: "Excel", emoji: "📊" },
   { id: "ppt", label: "PowerPoint", emoji: "🎨" },
+  { id: "info", label: "Informática", emoji: "💻" },
   { id: "geral", label: "Geral", emoji: "🌐" },
 ];
 
@@ -373,7 +478,7 @@ const DIFFICULTY_TABS: { id: DifficultyFilter; label: string }[] = [
 ];
 
 function isAppFilter(value: string | null): value is AppFilter {
-  return value === "word" || value === "excel" || value === "ppt" || value === "geral";
+  return value === "word" || value === "excel" || value === "ppt" || value === "geral" || value === "info";
 }
 
 export function Arcade() {
@@ -430,7 +535,7 @@ export function Arcade() {
             !
           </h1>
           <p className="mx-auto mt-3 max-w-2xl text-muted-foreground md:text-lg">
-            {GAMES.length} minigames de Word, Excel, PowerPoint e Geral. Rápidos, divertidos e prontos para a sala de aula.
+            {GAMES.length} minigames de Word, Excel, PowerPoint, Informática e Geral. Rápidos, divertidos e prontos para a sala de aula.
           </p>
         </motion.div>
 

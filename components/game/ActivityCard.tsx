@@ -24,6 +24,7 @@ const APP_LABEL: Record<string, string> = {
   excel: "Excel",
   ppt: "PowerPoint",
   geral: "Geral",
+  info: "Informática",
 };
 
 const DIFFICULTY_LABEL: Record<string, string> = {
@@ -44,7 +45,18 @@ function columnLabel(index: number) {
 }
 
 const MODIFIERS = ["ctrl", "shift", "alt"] as const;
-const VIRTUAL_KEYS = ["A", "B", "C", "I", "N", "P", "S", "U", "V", "X", "Y", "Z", "F5"];
+/** [texto do botão, valor normalizado — o mesmo que e.key.toLowerCase()] */
+const VIRTUAL_KEYS: [string, string][] = [
+  ...["A", "B", "C", "E", "I", "K", "M", "N", "O", "P", "R", "S", "U", "V", "X", "Y", "Z", "0", "9"].map(
+    (k): [string, string] => [k, k.toLowerCase()]
+  ),
+  ["F5", "f5"],
+  ["F10", "f10"],
+  ["Esc", "escape"],
+  ["Delete", "delete"],
+  ["Pg Up", "pageup"],
+  ["Pg Dn", "pagedown"],
+];
 
 export function ActivityCard({ activity, onComplete, big, hideExplanation }: ActivityCardProps) {
   const [selected, setSelected] = React.useState<number | null>(null);
@@ -300,13 +312,13 @@ export function ActivityCard({ activity, onComplete, big, hideExplanation }: Act
                 </button>
               ))}
               <span className="text-muted-foreground">+</span>
-              {VIRTUAL_KEYS.map((k) => (
+              {VIRTUAL_KEYS.map(([label, value]) => (
                 <button
-                  key={k}
-                  onClick={() => pressVirtualKey(k)}
+                  key={value}
+                  onClick={() => pressVirtualKey(value)}
                   className="rounded-lg border border-white/20 bg-white/60 px-3 py-2 text-xs font-bold dark:border-white/10 dark:bg-white/5"
                 >
-                  {k}
+                  {label}
                 </button>
               ))}
             </div>

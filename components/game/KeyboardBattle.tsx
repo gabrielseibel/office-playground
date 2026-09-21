@@ -23,18 +23,14 @@ export function KeyboardBattle() {
 
   React.useEffect(() => {
     if (done || feedback !== "idle") return;
-    const id = window.setInterval(() => {
-      setTimeLeft((t) => {
-        if (t <= 100) {
-          resolveRound(false);
-          return ROUND_MS;
-        }
-        return t - 100;
-      });
-    }, 100);
+    const id = window.setInterval(() => setTimeLeft((t) => Math.max(0, t - 100)), 100);
     return () => window.clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, feedback, done]);
+
+  React.useEffect(() => {
+    if (timeLeft === 0 && feedback === "idle" && !done) resolveRound(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft]);
 
   React.useEffect(() => {
     if (!current) return;

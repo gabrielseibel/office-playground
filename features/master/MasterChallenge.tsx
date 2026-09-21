@@ -33,6 +33,7 @@ function emptyTally(): Tally {
     excel: { correct: 0, total: 0 },
     ppt: { correct: 0, total: 0 },
     geral: { correct: 0, total: 0 },
+    info: { correct: 0, total: 0 },
   };
 }
 
@@ -233,7 +234,15 @@ function pct(tally: Tally, app: AppId) {
 }
 
 function appLabel(app: AppId) {
-  return app === "word" ? "Word" : app === "excel" ? "Excel" : app === "ppt" ? "PowerPoint" : "Geral";
+  return app === "word"
+    ? "Word"
+    : app === "excel"
+    ? "Excel"
+    : app === "ppt"
+    ? "PowerPoint"
+    : app === "info"
+    ? "Informática"
+    : "Geral";
 }
 
 function IntroCard({ emoji, title, text }: { emoji: string; title: string; text: string }) {

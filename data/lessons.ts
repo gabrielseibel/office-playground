@@ -105,15 +105,15 @@ export const LESSONS: Lesson[] = [
     summary:
       "Os três botões mais usados da formatação: B deixa o texto em negrito para destacar, I inclina em itálico, e U sublinha com uma linha embaixo.",
     points: [
-      "Negrito (Ctrl+B) dá destaque.",
+      "Negrito (Ctrl+N) dá destaque.",
       "Itálico (Ctrl+I) inclina o texto — bom para títulos de obras.",
-      "Sublinhado (Ctrl+U) deve ser usado com moderação.",
+      "Sublinhado (Ctrl+S) deve ser usado com moderação.",
     ],
     practice: {
-      question: "Qual atalho deixa o texto selecionado em negrito?",
-      options: ["Ctrl + B", "Ctrl + I", "Ctrl + U"],
+      question: "No Word, qual atalho deixa o texto selecionado em negrito?",
+      options: ["Ctrl + N", "Ctrl + I", "Ctrl + B"],
       correctIndex: 0,
-      explanation: "Ctrl+B vem de 'Bold', negrito em inglês.",
+      explanation: "No Word (Microsoft 365 em português), Ctrl+N aplica o negrito. Ctrl+B é o atalho de salvar.",
     },
   },
   {

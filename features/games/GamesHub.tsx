@@ -640,8 +640,8 @@ const SHORTCUT_PAIRS = [
   { keys: ["Ctrl", "C"], desc: "Copiar" },
   { keys: ["Ctrl", "V"], desc: "Colar" },
   { keys: ["Ctrl", "Z"], desc: "Desfazer" },
-  { keys: ["Ctrl", "B"], desc: "Negrito" },
-  { keys: ["Ctrl", "S"], desc: "Salvar" },
+  { keys: ["Ctrl", "N"], desc: "Negrito no Word" },
+  { keys: ["Ctrl", "B"], desc: "Salvar no Word" },
 ];
 
 export function ShortcutGame() {

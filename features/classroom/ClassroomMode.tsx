@@ -23,6 +23,7 @@ const APP_OPTIONS: { id: ClassroomApp; label: string; emoji: string }[] = [
   { id: "word", label: "Word", emoji: "📝" },
   { id: "excel", label: "Excel", emoji: "📊" },
   { id: "ppt", label: "PowerPoint", emoji: "🎨" },
+  { id: "info", label: "Informática", emoji: "💻" },
   { id: "misto", label: "Misto", emoji: "🌐" },
 ];
 

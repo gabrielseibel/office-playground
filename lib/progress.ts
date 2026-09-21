@@ -15,6 +15,7 @@ const EMPTY_APP_RECORD: Record<AppId, number> = {
   excel: 0,
   ppt: 0,
   geral: 0,
+  info: 0,
 };
 
 export const DEFAULT_PROGRESS: ProgressState = {

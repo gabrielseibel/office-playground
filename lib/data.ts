@@ -5,6 +5,7 @@ import type {
   Curiosity,
   Shortcut,
 } from "@/types";
+import { shortcutTips } from "@/data/shortcuts";
 
 export const APPS: AppMeta[] = [
   {
@@ -39,27 +40,12 @@ export const APPS: AppMeta[] = [
   },
 ];
 
-export const SHORTCUTS: Shortcut[] = [
-  {
-    keys: ["Ctrl", "B"],
-    app: "word",
-    title: "Negrito",
-    description: "Transforma o texto selecionado em negrito, dando mais destaque.",
-  },
-  {
-    keys: ["Ctrl", "I"],
-    app: "word",
-    title: "Itálico",
-    description:
-      "Coloca o texto em itálico — ótimo para títulos de livros, termos estrangeiros ou ênfase suave.",
-  },
-  {
-    keys: ["Ctrl", "U"],
-    app: "word",
-    title: "Sublinhado",
-    description:
-      "Adiciona uma linha sob o texto. Use com moderação para não poluir o documento.",
-  },
+/**
+ * Dicas de atalhos. Os atalhos que mudam de um programa para outro (salvar, negrito,
+ * novo…) vêm de data/shortcuts.ts, com as tabelas do Microsoft 365; aqui ficam só os
+ * que valem igual para todos.
+ */
+const COMMON_SHORTCUTS: Shortcut[] = [
   {
     keys: ["Ctrl", "C"],
     app: "all",
@@ -96,39 +82,11 @@ export const SHORTCUTS: Shortcut[] = [
       "Refaz algo que você desfez por engano. Salva o dia constantemente.",
   },
   {
-    keys: ["Ctrl", "S"],
-    app: "all",
-    title: "Salvar",
-    description:
-      "Salva o arquivo. Faça isso com frequência — todo bom editor salva a cada minuto.",
-  },
-  {
-    keys: ["Ctrl", "N"],
-    app: "all",
-    title: "Novo",
-    description:
-      "Cria um novo documento, planilha ou apresentação em branco.",
-  },
-  {
-    keys: ["Ctrl", "P"],
-    app: "all",
-    title: "Imprimir",
-    description:
-      "Abre a janela de impressão. Combine com Ctrl+P para visualizar antes.",
-  },
-  {
     keys: ["Ctrl", "F"],
     app: "all",
     title: "Localizar",
     description:
       "Abre o campo de busca. Encontre qualquer palavra em segundos.",
-  },
-  {
-    keys: ["F5"],
-    app: "ppt",
-    title: "Iniciar apresentação",
-    description:
-      "Coloca a apresentação em tela cheia a partir do primeiro slide.",
   },
   {
     keys: ["F2"],
@@ -152,6 +110,8 @@ export const SHORTCUTS: Shortcut[] = [
       "Abre a janela de formatação — mude números, fontes, bordas e cores.",
   },
 ];
+
+export const SHORTCUTS: Shortcut[] = [...shortcutTips(), ...COMMON_SHORTCUTS];
 
 export const CURIOSITIES: Curiosity[] = [
   {
@@ -241,9 +201,9 @@ export const CHALLENGES: Challenge[] = [
   {
     question: "Qual atalho deixa o texto em negrito no Word?",
     options: ["Ctrl + I", "Ctrl + B", "Ctrl + N", "Ctrl + U"],
-    correctIndex: 1,
+    correctIndex: 2,
     explanation:
-      "Ctrl + B (de 'Bold', negrito em inglês) aplica e remove o negrito rapidamente.",
+      "No Word (Microsoft 365 em português), Ctrl + N aplica e remove o negrito. Ctrl + B é o atalho de salvar.",
     app: "word",
   },
   {
