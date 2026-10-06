@@ -21,12 +21,19 @@ import {
   GraduationCap,
   Crown,
   Compass,
+  Cpu,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "./ThemeProvider";
 import { XPPill } from "@/components/game/XPBar";
 
-const items = [
+const items: {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  eyebrow?: string;
+  short?: string;
+}[] = [
   { label: "Início", href: "/#inicio", icon: Home },
   { label: "Trilha", href: "/trilha", icon: Compass },
   { label: "Word", href: "/word", icon: FileText },
@@ -36,6 +43,15 @@ const items = [
   { label: "Conquistas", href: "/conquistas", icon: Trophy },
   { label: "Sala de Aula", href: "/sala-de-aula", icon: GraduationCap },
   { label: "Desafio Mestre", href: "/desafio-mestre", icon: Crown },
+  {
+    label: "Curso - Informática Essencial - Aula 4",
+    // No menu do computador o nome longo vai em duas linhas para não
+    // empurrar os outros itens; no menu do celular aparece por extenso.
+    eyebrow: "Curso - Informática Essencial",
+    short: "Aula 4",
+    href: "/curso-informatica-essencial-aula-4",
+    icon: Cpu,
+  },
   { label: "Dicas", href: "/#dicas", icon: Lightbulb },
   { label: "Sobre", href: "/#sobre", icon: Info },
 ];
@@ -90,7 +106,7 @@ export function Navbar() {
             </span>
           </Link>
 
-          <ul className="hidden items-center gap-1 lg:flex">
+          <ul className="hidden items-center gap-1 xl:flex">
             {items.map((item) => {
               const active =
                 pathname === item.href ||
@@ -109,7 +125,16 @@ export function Navbar() {
                         "bg-blue-600/10 text-blue-700 dark:bg-blue-400/15 dark:text-blue-300"
                     )}
                   >
-                    {item.label}
+                    {item.eyebrow ? (
+                      <span className="flex flex-col whitespace-nowrap leading-none">
+                        <span className="text-[9px] font-medium opacity-70">
+                          {item.eyebrow}
+                        </span>
+                        <span className="mt-0.5">{item.short}</span>
+                      </span>
+                    ) : (
+                      item.label
+                    )}
                   </Link>
                 </li>
               );
@@ -129,7 +154,7 @@ export function Navbar() {
               onClick={() => setOpen((o) => !o)}
               aria-label="Abrir menu"
               aria-expanded={open}
-              className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 bg-white/50 text-foreground/70 transition hover:bg-white/80 dark:bg-white/5 dark:hover:bg-white/10 lg:hidden"
+              className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 bg-white/50 text-foreground/70 transition hover:bg-white/80 dark:bg-white/5 dark:hover:bg-white/10 xl:hidden"
             >
               {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
@@ -144,7 +169,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="lg:hidden"
+            className="xl:hidden"
           >
             <div className="mx-auto mt-2 max-w-7xl px-4">
               <div className="glass-strong rounded-2xl border p-3 shadow-soft-lg">
