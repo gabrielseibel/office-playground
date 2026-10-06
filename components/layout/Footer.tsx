@@ -60,6 +60,14 @@ export function Footer() {
                   👑 Desafio Mestre
                 </Link>
               </li>
+              <li>
+                <Link
+                  className="hover:text-foreground"
+                  href="/curso-informatica-essencial-aula-4"
+                >
+                  🖥️ Curso: Informática Essencial — Aula 4
+                </Link>
+              </li>
             </ul>
           </div>
 
