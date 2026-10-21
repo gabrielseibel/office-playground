@@ -63,9 +63,9 @@ export function Footer() {
               <li>
                 <Link
                   className="hover:text-foreground"
-                  href="/curso-informatica-essencial-aula-4"
+                  href="/curso-informatica-essencial-aula-5"
                 >
-                  🖥️ Curso: Informática Essencial — Aula 4
+                  🖥️ Curso: Informática Essencial — Aula 5
                 </Link>
               </li>
             </ul>

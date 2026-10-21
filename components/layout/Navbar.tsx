@@ -44,12 +44,12 @@ const items: {
   { label: "Sala de Aula", href: "/sala-de-aula", icon: GraduationCap },
   { label: "Desafio Mestre", href: "/desafio-mestre", icon: Crown },
   {
-    label: "Curso - Informática Essencial - Aula 4",
+    label: "Curso - Informática Essencial - Aula 5",
     // No menu do computador o nome longo vai em duas linhas para não
     // empurrar os outros itens; no menu do celular aparece por extenso.
     eyebrow: "Curso - Informática Essencial",
-    short: "Aula 4",
-    href: "/curso-informatica-essencial-aula-4",
+    short: "Aula 5",
+    href: "/curso-informatica-essencial-aula-5",
     icon: Cpu,
   },
   { label: "Dicas", href: "/#dicas", icon: Lightbulb },
