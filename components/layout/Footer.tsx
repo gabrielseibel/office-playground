@@ -76,6 +76,11 @@ export function Footer() {
                   🌐 Curso: Redes — Aula 1
                 </Link>
               </li>
+              <li>
+                <Link className="hover:text-foreground" href="/laboratorio-de-redes">
+                  🧪 Laboratório de Redes
+                </Link>
+              </li>
             </ul>
           </div>
 

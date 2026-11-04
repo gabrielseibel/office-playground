@@ -23,6 +23,7 @@ import {
   Compass,
   Cpu,
   Network,
+  FlaskConical,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "./ThemeProvider";
@@ -60,6 +61,7 @@ const items: {
     href: "/curso-informatica-essencial-redes-aula-1",
     icon: Network,
   },
+  { label: "Laboratório de Redes", href: "/laboratorio-de-redes", icon: FlaskConical },
   { label: "Dicas", href: "/#dicas", icon: Lightbulb },
   { label: "Sobre", href: "/#sobre", icon: Info },
 ];
