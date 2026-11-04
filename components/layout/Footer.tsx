@@ -68,6 +68,14 @@ export function Footer() {
                   🖥️ Curso: Informática Essencial — Aula 5
                 </Link>
               </li>
+              <li>
+                <Link
+                  className="hover:text-foreground"
+                  href="/curso-informatica-essencial-redes-aula-1"
+                >
+                  🌐 Curso: Redes — Aula 1
+                </Link>
+              </li>
             </ul>
           </div>
 

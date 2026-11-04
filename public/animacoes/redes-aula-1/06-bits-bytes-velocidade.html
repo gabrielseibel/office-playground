@@ -1,0 +1,53 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bits, bytes e velocidade da rede</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script></head><body><script>
+V.init({title:"Bits, bytes e velocidade da rede"});const C=V.C,tl=V.tl;
+function box(g,txt,x,y,w,h,col,s){const b=V.g(g,x,y);V.el("rect",{x:-w/2,y:-h/2,width:w,height:h,rx:12,fill:col,stroke:"#0b1626","stroke-width":3},b);const t=V.text(b,txt,0,(s||40)*0.35,{s:s||40,w:800});return [b,t];}
+/* ---------- A: bit ---------- */
+const A=V.g(V.s,0,0),tA=.4,dA=13;V.scene(A,tA,dA);
+V.title("A rede só entende dois valores","bit",tA,3.2);
+const lamp=V.g(A,330,330);V.el("circle",{r:80,fill:"#1a2b44",stroke:"#9fb6d0","stroke-width":6},lamp);const on=V.el("circle",{r:66,fill:C.amarelo,opacity:0},lamp);
+const t0=V.text(lamp,"0",0,20,{s:64,w:800,c:"#cfe0f2"}),t1=V.text(lamp,"1",0,20,{s:64,w:800,c:"#0b1626"});gsap.set(t1,{opacity:0});V.text(lamp,"1 bit",0,150,{s:28,w:700,c:"#9fb6d0"});
+V.line(A,430,330,1100,330,{c:C.azulC,w:6});
+V.cap("O bit é a menor peça da informação. Só tem dois valores: 0 (sem sinal) ou 1 (com sinal).",tA+.8,4.4);
+for(let i=0;i<6;i++){const tt=tA+1.4+i*.6,lit=i%2===0;tl.to(on,{opacity:lit?1:0,duration:.12},tt);tl.to(t1,{opacity:lit?1:0,duration:.12},tt);tl.to(t0,{opacity:lit?0:1,duration:.12},tt);}
+tl.to(on,{opacity:0,duration:.1},tA+5);tl.to(t1,{opacity:0,duration:.1},tA+5);tl.to(t0,{opacity:1,duration:.1},tA+5);
+const pat="01101001".split("");
+pat.forEach((v,i)=>{const q=V.chip(A,v,0,0,{w:48,s:28,c:v==="1"?C.amarelo:C.azulE,t:v==="1"?"#0b1626":"#fff"});gsap.set(q,{opacity:0});const tt=tA+5.4+i*.55;V.travel(q,[[450,330],[1080,330]],tt,260);tl.to(q,{opacity:0,duration:.25},tt+2.3);});
+V.cap("Na rede, o cabo leva uma fila de sinais ligados e desligados, bem rápido.",tA+5.2,6.6);
+/* ---------- B: byte ---------- */
+const B=V.g(V.s,0,0),tB=14.2,dB=13;V.scene(B,tB,dB);
+V.title("8 bits formam 1 byte","um byte guarda uma letra",tB,3.2);
+const bits="01000001".split("");const bb=bits.map((v,i)=>{const [b]=box(B,v,260+i*105,260,86,100,v==="1"?C.amarelo:C.azulE,48);if(v==="1")b.querySelector("text").setAttribute("fill","#0b1626");gsap.set(b,{opacity:0});V.pop(b,tB+1+i*.25);return b;});
+const br=V.el("path",{d:"M215 335v16h745v-16",fill:"none",stroke:C.azulC,"stroke-width":5,"stroke-linecap":"round","stroke-linejoin":"round",opacity:0},B);tl.to(br,{opacity:1,duration:.4},tB+3.2);
+const by=V.text(B,"1 byte",587,395,{s:30,w:800,c:C.azulC});gsap.set(by,{opacity:0});tl.to(by,{opacity:1,duration:.4},tB+3.4);
+V.cap("Oito bits juntos formam um byte.",tB+3,3);
+const [ltr]=box(B,"A",587,520,110,110,C.verde,64);gsap.set(ltr,{opacity:0});tl.to(ltr,{opacity:1,duration:.5},tB+6.6);
+V.text(B,"=",587,375,{s:1,w:400});
+V.cap("Este byte, 01000001, é a letra A. Uma palavra de 5 letras ocupa 5 bytes.",tB+6.4,5.6);
+/* ---------- C: escala ---------- */
+const Cc=V.g(V.s,0,0),tC=28,dC=14;V.scene(Cc,tC,dC);
+V.title("Do byte ao gigabyte","cada degrau é mil vezes o anterior",tC,3.4);
+const esc=[["1 byte","uma letra",C.azulE,90],["1 KB","um texto curto",C.azul,150],["1 MB","uma foto",C.verde,210],["1 GB","um filme curto",C.laranja,270]];
+esc.forEach((e,i)=>{const g=V.g(Cc,0,0);const w=e[3]*1.6,x=140,y=170+i*105;V.el("rect",{x:x,y:y-38,width:w+60,height:76,rx:14,fill:e[2],stroke:"#0b1626","stroke-width":3},g);V.text(g,e[0],x+30,y+9,{s:32,w:800,a:"start"});V.text(g,"= "+e[1],x+w+100,y+9,{s:28,w:500,a:"start",c:"#cfe0f2"});gsap.set(g,{opacity:0});tl.to(g,{opacity:1,x:0,startAt:{x:-60},duration:.5},tC+1+i*2.2);});
+V.cap("Um byte é uma letra. 1.000 bytes são 1 KB. 1.000 KB são 1 MB. 1.000 MB são 1 GB.",tC+.8,8.6);
+V.cap("Quanto maior o arquivo, mais bytes a rede precisa carregar.",tC+9.8,4);
+/* ---------- D: velocidade ---------- */
+const D=V.g(V.s,0,0),tD=42.4,dD=20;V.scene(D,tD,dD);
+V.title("Mbps e MB/s não são a mesma coisa","o provedor fala em bits, o download mostra bytes",tD,4);
+const [pl]=box(D,"100 Mbps",300,200,300,90,C.roxo,40);gsap.set(pl,{opacity:0});tl.to(pl,{opacity:1,duration:.5},tD+1);
+V.text(D,"megabits por segundo (o que está no contrato)",300,280,{s:20,w:500,c:"#cfe0f2"});
+V.cap("O plano de internet vem em Mbps: megabits por segundo.",tD+.8,3.6);
+const dv=V.text(D,"÷ 8",640,225,{s:56,w:800,c:C.amarelo});gsap.set(dv,{opacity:0});tl.to(dv,{opacity:1,scale:1,duration:.4},tD+4.6);
+const [mb]=box(D,"12,5 MB/s",980,200,300,90,C.verde,40);gsap.set(mb,{opacity:0});tl.to(mb,{opacity:1,duration:.5},tD+5.4);
+V.text(D,"megabytes por segundo (o que o download mostra)",980,280,{s:20,w:500,c:"#cfe0f2"});
+V.cap("Como 1 byte tem 8 bits, divida por 8: 100 Mbps viram 12,5 MB/s.",tD+4.4,4.6);
+/* barra de download */
+V.text(D,"Baixar um arquivo de 100 MB",640,380,{s:30,w:700});
+V.el("rect",{x:190,y:420,width:900,height:60,rx:16,fill:"#0d2744",stroke:C.azulC,"stroke-width":4},D);
+const fill=V.el("rect",{x:194,y:424,width:0,height:52,rx:12,fill:C.verde},D);
+const cnt=V.text(D,"0 s",640,540,{s:48,w:800,c:C.amarelo});
+const o={p:0};tl.to(o,{p:1,duration:8,ease:"none",onUpdate:()=>{fill.setAttribute("width",String(892*o.p));cnt.textContent=(8*o.p).toFixed(1).replace(".",",")+" s";}},tD+10);
+V.cap("100 MB divididos por 12,5 MB/s dão 8 segundos. Esse é o cálculo que o técnico faz de cabeça.",tD+9.8,8.4);
+V.cap("Mais velocidade e menos gente na rede: download mais rápido.",tD+18.6,3);
+V.finish();
+</script></body></html>

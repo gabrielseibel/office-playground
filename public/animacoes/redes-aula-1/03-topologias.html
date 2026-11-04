@@ -1,0 +1,95 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Topologias: como os computadores se ligam</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script></head><body><script>
+V.init({title:"Topologias: como os computadores se ligam"});const C=V.C,tl=V.tl;
+const pk=(g,c)=>{const d=V.dot(g,0,0,{c:c||C.amarelo,r:13});gsap.set(d,{opacity:0});return d;};
+const grey=(g,t)=>tl.to(g.children[0],{attr:{fill:C.cinza},duration:.4},t);
+const lab=(g,txt,x,y,t,color,hold)=>{const c=V.chip(g,txt,x,y,{c:color||"#3b1717",b:C.verm,s:22});gsap.set(c,{opacity:0});V.pop(c,t,.4);if(hold)tl.to(c,{opacity:0,duration:.3},t+hold);return c;};
+const okc=(g,txt,x,y,t,hold)=>lab(g,txt,x,y,t,"#123a25",hold);
+function cena(t0,dur,nome,sub){const g=V.g(V.s,0,0);V.scene(g,t0,dur);V.title(nome,sub,t0+.1,3.2);return g;}
+function nos(g,pts,o){return pts.map((p,i)=>V.pc(g,"PC "+(i+1),p[0],p[1],Object.assign({w:76,h:50,s:18},o||{})));}
+
+/* 1. BARRAMENTO */
+{const t0=1,g=cena(t0,15.5,"Barramento","Um cabo único para todos");
+ const xs=[330,490,650,810,970],bus=V.line(g,250,330,1030,330,{c:C.azulC,w:9});V.drawIn(bus,t0+.3,.8,250,330,1030,330);
+ xs.forEach(x=>V.line(g,x,250,x,330,{c:C.azulC,w:4}));
+ const pcs=nos(g,xs.map(x=>[x,215]));gsap.set(pcs,{opacity:0});pcs.forEach((p,i)=>V.pop(p,t0+.6+i*.15,.4));
+ const a=pk(g),b=pk(g,C.laranja),c=pk(g,C.verde);
+ V.cap("Todos os computadores usam o mesmo cabo. Cada mensagem anda sobre ele, uma de cada vez.",t0+.4,4.4);
+ V.travel(a,[[330,215],[330,330],[810,330],[810,215]],t0+2,330);
+ /* colisão */
+ V.travel(b,[[330,215],[330,330],[640,330]],t0+5.8,280);V.travel(c,[[970,215],[970,330],[660,330]],t0+5.8,280);
+ const boom=V.el("circle",{cx:650,cy:330,r:6,fill:C.verm,opacity:0},g);tl.fromTo(boom,{attr:{r:6},opacity:.95},{attr:{r:70},opacity:0,duration:.7},t0+7.5);
+ tl.to([b,c],{opacity:0,duration:.2},t0+7.6);
+ lab(g,"colisão: as duas voltam e esperam",650,410,t0+7.6,null,2.6);
+ V.cap("Duas mensagens ao mesmo tempo colidem. As duas voltam e esperam a vez.",t0+5.2,3.8);
+ const x=V.cross(g,650,330,26);gsap.set(x,{opacity:0});tl.to(x,{opacity:1,duration:.3},t0+10.6);pcs.forEach(p=>grey(p,t0+10.8));
+ lab(g,"cabo principal rompeu: a rede toda para",650,470,t0+11);
+ V.cap("Se o cabo principal rompe, a rede inteira para.",t0+10.4,4.5);}
+
+/* 2. ANEL */
+{const t0=17.5,g=cena(t0,13,"Anel","Cada computador liga a dois vizinhos");
+ const cx=640,cy=345,R=165,P=[0,1,2,3,4].map(i=>{const a=-Math.PI/2+i*2*Math.PI/5;return [cx+R*1.35*Math.cos(a),cy+R*Math.sin(a)];});
+ P.forEach((p,i)=>{const q=P[(i+1)%5];const l=V.line(g,p[0],p[1],q[0],q[1],{c:C.azulC,w:7});V.drawIn(l,t0+.4+i*.25,.5,p[0],p[1],q[0],q[1]);});
+ const pcs=nos(g,P);gsap.set(pcs,{opacity:0});pcs.forEach((p,i)=>V.pop(p,t0+.5+i*.15,.4));
+ const a=pk(g);V.cap("No anel, a mensagem passa de vizinho em vizinho até chegar ao destino.",t0+.4,4.6);
+ V.travel(a,[P[0],P[1],P[2],P[3]],t0+2.2,230);
+ const b=pk(g,C.laranja);
+ const x=V.cross(g,P[2][0],P[2][1],22);gsap.set(x,{opacity:0});tl.to(x,{opacity:1,duration:.3},t0+7.2);grey(pcs[2],t0+7.2);
+ V.travel(b,[P[0],P[1]],t0+8,230);
+ lab(g,"travou: o caminho passa pelo PC 3",640,575,t0+9.2);
+ V.cap("Se um computador do anel desliga, a mensagem não passa e o anel simples para.",t0+7,5.4);}
+
+/* 3. ESTRELA */
+{const t0=31,g=cena(t0,14.5,"Estrela","Todos ligados a um ponto central");
+ const cx=640,cy=345,P=[0,1,2,3,4].map(i=>{const a=-Math.PI/2+i*2*Math.PI/5;return [cx+240*Math.cos(a),cy+150*Math.sin(a)+10];});
+ const ls=P.map((p,i)=>{const l=V.line(g,cx,cy,p[0],p[1],{c:C.azulC,w:6});V.drawIn(l,t0+.4+i*.2,.5,cx,cy,p[0],p[1]);return l;});
+ const sw=V.node(g,"Ponto central",cx,cy,{w:150,h:46,s:18});gsap.set(sw,{opacity:0});V.pop(sw,t0+.3,.4);
+ const pcs=nos(g,P);gsap.set(pcs,{opacity:0});pcs.forEach((p,i)=>V.pop(p,t0+.6+i*.15,.4));
+ const a=pk(g);V.cap("Na estrela, cada computador tem o seu cabo até o ponto central.",t0+.4,4.2);
+ V.travel(a,[P[0],[cx,cy],P[3]],t0+2,260);
+ const x3=V.cross(g,P[2][0],P[2][1]-4,22);gsap.set(x3,{opacity:0});tl.to(x3,{opacity:1,duration:.3},t0+5.4);grey(pcs[2],t0+5.4);
+ const b=pk(g,C.verde);V.travel(b,[P[1],[cx,cy],P[4]],t0+6,260);
+ okc(g,"só o PC 3 saiu: os outros continuam",640,545,t0+6.2,4);
+ V.cap("Se um cabo falha, só aquele computador fica sem rede. É fácil achar o defeito.",t0+5,4.4);
+ const xc=V.cross(g,cx,cy,28);gsap.set(xc,{opacity:0});tl.to(xc,{opacity:1,duration:.3},t0+10.6);pcs.forEach(p=>grey(p,t0+10.8));grey(sw,t0+10.8);
+ lab(g,"ponto central caiu: todos ficam sem rede",640,545,t0+11);
+ V.cap("Se o ponto central cai, a rede toda cai. Por isso ele merece cuidado.",t0+10.4,4);}
+
+/* 4. MALHA */
+{const t0=46.5,g=cena(t0,13.5,"Malha","Todos com todos");
+ const cx=640,cy=340,R=165,P=[0,1,2,3,4].map(i=>{const a=-Math.PI/2+i*2*Math.PI/5;return [cx+R*1.3*Math.cos(a),cy+R*Math.sin(a)];});
+ let k=0;const ln={};
+ for(let i=0;i<5;i++)for(let j=i+1;j<5;j++){const l=V.line(g,P[i][0],P[i][1],P[j][0],P[j][1],{c:C.azulC,w:4,op:.85});ln[i+"-"+j]=l;V.drawIn(l,t0+.4+k*.12,.4,P[i][0],P[i][1],P[j][0],P[j][1]);k++;}
+ const pcs=nos(g,P);gsap.set(pcs,{opacity:0});pcs.forEach((p,i)=>V.pop(p,t0+.5+i*.12,.4));
+ const cont=V.chip(g,"5 computadores: 10 cabos",640,575,{c:"#3b2a10",b:C.amarelo,s:22});gsap.set(cont,{opacity:0});V.pop(cont,t0+2.2,.4);
+ V.cap("Na malha, todos se ligam com todos. Cada par tem o seu cabo.",t0+.4,4.2);
+ const a=pk(g);V.travel(a,[P[0],P[3]],t0+4.8,280);
+ const x=V.cross(g,(P[0][0]+P[3][0])/2,(P[0][1]+P[3][1])/2,20);gsap.set(x,{opacity:0});tl.to(x,{opacity:1,duration:.3},t0+6.4);tl.to(ln["0-3"],{opacity:.12,duration:.3},t0+6.4);
+ const b=pk(g,C.verde);V.travel(b,[P[0],P[4],P[3]],t0+7.2,280);
+ okc(g,"o cabo direto rompeu: a mensagem foi por outro caminho",640,570,t0+8.2);
+ V.cap("Se um cabo rompe, a mensagem segue por outro caminho. Custa muitos cabos.",t0+6.2,6);
+ tl.to(cont,{opacity:0,duration:.2},t0+8.1);}
+
+/* 5. ÁRVORE */
+{const t0=61,g=cena(t0,12.5,"Árvore","Estrelas ligadas entre si");
+ const T=[640,170],L=[430,300],R=[850,300],F=[[320,440],[540,440],[740,440],[960,440]];
+ const seg=[[T,L],[T,R],[L,F[0]],[L,F[1]],[R,F[2]],[R,F[3]]];
+ seg.forEach((s,i)=>{const l=V.line(g,s[0][0],s[0][1],s[1][0],s[1][1],{c:C.azulC,w:6});V.drawIn(l,t0+.4+i*.2,.5,s[0][0],s[0][1],s[1][0],s[1][1]);});
+ [T,L,R].forEach((p,i)=>{const n=V.node(g,i?"Andar "+i:"Térreo",p[0],p[1],{w:120,h:42,s:18});gsap.set(n,{opacity:0});V.pop(n,t0+.4+i*.2,.4);});
+ const pcs=nos(g,F);gsap.set(pcs,{opacity:0});pcs.forEach((p,i)=>V.pop(p,t0+1.4+i*.15,.4));
+ V.cap("Na árvore, cada andar tem a sua estrela, e as estrelas se ligam ao ponto principal.",t0+.4,4.6);
+ const a=pk(g);V.travel(a,[F[0],L,T,R,F[3]],t0+3.2,300);
+ V.cap("Cada andar depende do ponto que está acima dele.",t0+7,4.6);}
+
+/* RESUMO */
+{const t0=75,g=cena(t0,14,"Qual escolher?","O escritório da clínica");
+ const nomes=[["Barramento","um cabo para todos"],["Anel","dois vizinhos"],["Estrela","ponto central"],["Malha","todos com todos"],["Árvore","estrelas ligadas"]];
+ nomes.forEach((n,i)=>{const x=170+i*235,es=i===2;const b=V.g(g,x,330);gsap.set(b,{opacity:0});
+  V.el("rect",{x:-100,y:-90,width:200,height:180,rx:18,fill:es?"#17402b":"#0d2240",stroke:es?C.verde:C.azulC,"stroke-width":es?6:3},b);
+  V.text(b,n[0],0,-20,{s:28,w:800,c:es?"#8be6b4":"#fff"});V.text(b,n[1],0,22,{s:20,w:400,c:"#cfe0f2"});
+  if(es)V.text(b,"mais usada",0,62,{s:20,w:700,c:C.amarelo});
+  V.pop(b,t0+.6+i*.25,.45);});
+ V.cap("Para escritórios, escolas e clínicas, a estrela é a mais usada: cabo por cabo, o defeito é fácil de achar.",t0+.4,6);
+ V.cap("Agora é com você: escolha a topologia da clínica e escreva o motivo.",t0+7,6);}
+V.finish();
+</script></body></html>

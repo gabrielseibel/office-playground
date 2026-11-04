@@ -18,6 +18,8 @@ const nextConfig = {
   reactStrictMode: false,
   output: "export",
   basePath,
+  // O iframe das animações em public/ precisa saber o subcaminho do site.
+  env: { NEXT_PUBLIC_BASE_PATH: basePath },
   images: {
     unoptimized: true,
     remotePatterns: [{ protocol: "https", hostname: "**" }],

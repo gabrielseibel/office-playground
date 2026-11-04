@@ -22,6 +22,7 @@ import {
   Crown,
   Compass,
   Cpu,
+  Network,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "./ThemeProvider";
@@ -51,6 +52,13 @@ const items: {
     short: "Aula 5",
     href: "/curso-informatica-essencial-aula-5",
     icon: Cpu,
+  },
+  {
+    label: "Curso - Informática Essencial - Redes, Aula 1",
+    eyebrow: "Curso - Redes",
+    short: "Aula 1",
+    href: "/curso-informatica-essencial-redes-aula-1",
+    icon: Network,
   },
   { label: "Dicas", href: "/#dicas", icon: Lightbulb },
   { label: "Sobre", href: "/#sobre", icon: Info },

@@ -1,0 +1,45 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tipos de rede: PAN, LAN, MAN e WAN</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script></head><body><script>
+V.init({title:"Tipos de rede: PAN, LAN, MAN e WAN"});const C=V.C,tl=V.tl;
+const cx=420,cy=335;const K=.78;
+const aneis=[{n:"PAN",r:62,c:C.verde,nome:"Rede pessoal",alc:"alguns metros",ex:"celular e fone por bluetooth"},{n:"LAN",r:125,c:C.azul,nome:"Rede local",alc:"uma sala ou prédio",ex:"a rede da Clínica Bem Viver"},{n:"MAN",r:187,c:C.laranja,nome:"Rede metropolitana",alc:"uma cidade ou campus",ex:"prefeitura ligando seus prédios"},{n:"WAN",r:248,c:C.roxo,nome:"Rede de longa distância",alc:"país ou mundo",ex:"a internet"}];
+const gAneis=aneis.map(a=>{const g=V.g(V.s,cx,cy);V.el("circle",{r:a.r,fill:a.c,"fill-opacity":.14,stroke:a.c,"stroke-width":5},g);gsap.set(g,{opacity:0,scale:.3});return g;});
+/* conteúdo de cada anel */
+function icone(k){const outer=V.g(V.s,cx,cy);const inner=V.el("g",{transform:"scale("+k+")"},outer);return [outer,inner];}
+const [iconPAN,iPAN]=icone(.62);{
+ V.el("rect",{x:-48,y:-30,width:34,height:60,rx:7,fill:C.verde,stroke:"#0b1626","stroke-width":3},iPAN);V.el("rect",{x:-43,y:-23,width:24,height:40,rx:3,fill:"#0d2744"},iPAN);
+ V.el("path",{d:"M28 5 q0 -28 18 -28 q18 0 18 28",fill:"none",stroke:C.verde,"stroke-width":7,"stroke-linecap":"round"},iPAN);V.el("rect",{x:20,y:2,width:14,height:22,rx:6,fill:C.verde},iPAN);V.el("rect",{x:58,y:2,width:14,height:22,rx:6,fill:C.verde},iPAN);
+ V.el("path",{d:"M-8 -6 q10 6 0 12 M-2 -14 q20 14 0 28",fill:"none",stroke:C.amarelo,"stroke-width":4,"stroke-linecap":"round"},iPAN);}
+const [iconLAN,iLAN]=icone(.8);{ const pp=[[-105,-62],[105,-62],[105,62],[-105,62]];
+ pp.forEach((p,i)=>{const q=pp[(i+1)%4];V.line(iLAN,p[0],p[1],q[0],q[1],{c:C.azulC,w:4});});
+ pp.forEach(p=>V.pc(iLAN,"",p[0],p[1],{w:56,h:38}));}
+const [iconMAN,iMAN]=icone(.78);{ const bp=[[-185,-70],[185,-70],[0,-150],[-170,115],[170,115]];
+ [[0,1],[1,4],[4,3],[3,0],[0,2],[2,1]].forEach(l=>V.line(iMAN,bp[l[0]][0],bp[l[0]][1],bp[l[1]][0],bp[l[1]][1],{c:C.laranja,w:3,op:.8}));
+ bp.forEach(p=>{const b=V.g(iMAN,p[0],p[1]);V.el("rect",{x:-22,y:-34,width:44,height:68,rx:5,fill:C.laranja,stroke:"#0b1626","stroke-width":3},b);for(let k=0;k<3;k++)V.el("rect",{x:-12,y:-24+k*18,width:24,height:9,fill:"#fde3cf"},b);});}
+const [iconWAN,iWAN]=icone(.78);{ const pts=[[-260,-130],[250,-150],[-270,150],[260,160],[0,-285],[0,290],[-300,0],[300,10]];
+ pts.forEach(p=>{V.line(iWAN,p[0],p[1],0,0,{c:C.roxo,w:3,op:.55});V.pc(iWAN,"",p[0],p[1],{w:50,h:34,c:C.roxo});});
+ V.node(iWAN,"Internet",0,0,{c:C.roxo,w:110,h:38,s:18});}
+const icons=[iconPAN,iconLAN,iconMAN,iconWAN];icons.forEach(i=>gsap.set(i,{opacity:0}));
+/* legenda lateral */
+const lg=V.g(V.s,0,0);
+const colx=840;
+V.text(lg,"Tipo",colx,118,{a:"start",s:20,c:"#9fb6d0"});V.text(lg,"Alcance",colx+110,118,{a:"start",s:20,c:"#9fb6d0"});
+const rowsG=aneis.map((a,i)=>{const y=190+i*105;const g=V.g(lg,0,0);
+ V.el("rect",{x:colx-14,y:y-44,width:410,height:92,rx:14,fill:a.c,"fill-opacity":.18,stroke:a.c,"stroke-width":3},g);
+ V.text(g,a.n,colx+28,y+4,{s:34,w:800,c:a.c,a:"start"});V.text(g,a.nome,colx+110,y-8,{s:21,a:"start",w:700});V.text(g,a.alc,colx+110,y+18,{s:19,a:"start",w:400,c:"#cfe0f2"});V.text(g,"ex.: "+a.ex,colx+110,y+40,{s:17,a:"start",w:400,c:"#9fb6d0"});
+ gsap.set(g,{opacity:0});return g;});
+V.title("Que tamanho tem a rede?","PAN, LAN, MAN e WAN",.2,3.6);
+const T=[4.2,12,20,28];
+const capsT=["PAN: a rede pessoal. Alcança poucos metros, como o celular ligado ao fone por bluetooth.","LAN: a rede local. Fica em uma sala ou em um prédio. A rede da Clínica Bem Viver é uma LAN.","MAN: a rede metropolitana. Liga prédios de uma cidade ou de um campus, como os da prefeitura.","WAN: a rede de longa distância. Cobre países e continentes. A maior de todas é a internet."];
+aneis.forEach((a,i)=>{const t=T[i];
+  tl.to(gAneis[i],{opacity:1,scale:1,duration:.8,ease:"back.out(1.2)"},t);
+  tl.to(icons[i],{opacity:1,duration:.6},t+.5);
+  if(i>0)tl.to(icons[i-1],{opacity:.35,duration:.4},t);
+  tl.to(rowsG[i],{opacity:1,x:0,duration:.5,startAt:{x:40}},t+.3);
+  V.cap(capsT[i],t,7.4);
+});
+/* destaque final: cresce a escala */
+tl.to(gAneis,{scale:1.04,duration:.5,yoyo:true,repeat:1,stagger:.12},36.2);
+V.cap("Quanto maior o alcance, maior a rede. Hoje o foco é a LAN.",35.8,5);
+V.finish();
+</script></body></html>
