@@ -1,0 +1,29 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Logs: o diário da rede</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"Logs: o diário da rede"});const C=V.C,tl=V.tl;
+const A=V.g(V.s,0,0),tA=0.4,dA=36;V.scene(A,tA,dA);
+V.title("Log: o registro do que aconteceu","Quem fez o quê, quando e de onde",tA,4);
+const LOG=[["08:02:11","login","maria","192.168.10.100","sucesso",0],["08:15:42","login","admin","203.0.113.50","falha",1],["08:15:44","login","admin","203.0.113.50","falha",1],["08:15:46","login","admin","203.0.113.50","falha",1],["08:15:48","login","admin","203.0.113.50","falha",1],["08:15:50","login","admin","203.0.113.50","falha",1],["08:16:03","login","joao","192.168.10.101","sucesso",0],["08:16:30","pasta","maria","192.168.10.100","abriu Pacientes",0]];
+const P=V.g(A,640,330);V.el("rect",{x:-560,y:-195,width:1120,height:395,rx:14,fill:"#08111f",stroke:C.cinzaC,"stroke-width":2},P);
+const cols=[-540,-390,-280,-130,150];const heads=["hora","evento","usuário","origem","resultado"];heads.forEach((h,i)=>V.text(P,h,cols[i],-160,{a:"start",s:20,w:700,c:C.amarelo}));
+const linhas=LOG.map((l,i)=>{const g=V.g(P,0,-120+i*42);const bad=l[5]===1;if(bad)V.el("rect",{x:-548,y:-24,width:1096,height:38,rx:6,fill:C.verm,"fill-opacity":.0,id:"hl"+i},g);
+  l.slice(0,5).forEach((c,k)=>V.text(g,c,cols[k],4,{a:"start",s:22,w:600,f:'"Liberation Mono",monospace',c:(k===4&&bad)?"#f6b0b0":"#e8f1fb"}));gsap.set(g,{opacity:0});V.tl.fromTo(g,{opacity:0},{opacity:1,duration:.35},tA+3.8+i*.7);return g;});
+V.cap("Cada ação no sistema vira uma linha no log: hora, tipo de evento, usuário, origem e resultado.",tA+3.4,5.2);
+V.cap("Ler o log é como ler o diário da rede. Os problemas aparecem como padrões.",tA+9.6,4.8);
+const hl=V.el("rect",{x:92,y:226,width:1096,height:204,rx:12,fill:"none",stroke:C.verm,"stroke-width":5,opacity:0},A);
+V.tl.fromTo(hl,{opacity:0},{opacity:1,duration:.4,repeat:3,yoyo:true},tA+15);V.tl.set(hl,{opacity:1},tA+16.6);
+V.cap("Cinco falhas de login seguidas, no mesmo usuário, vindas do mesmo endereço de fora: 203.0.113.50.",tA+14.6,5.6);
+V.cap("Esse padrão é um ataque de força bruta. Sem o log, ninguém perceberia.",tA+20.6,5);
+V.cap("Repare também em quem acertou: maria e joao, de dentro da rede. Esses acessos são normais.",tA+26,5.2);
+V.cap("No Windows, o Visualizador de Eventos mostra os logs do próprio computador.",tA+31.4,4.6);
+/* cena B: ciclo */
+const B=V.g(V.s,0,0),tB=tA+dA+.2,dB=26;V.scene(B,tB,dB);
+V.title("Do log à correção","Quatro passos do diagnóstico",tB,4);
+const PA=[["Detectar","Notar o padrão estranho no log.",C.verm],["Entender","Ver hora, origem, usuário e ID do evento.",C.laranja],["Corrigir","Bloquear a origem no firewall e trocar a senha.",C.verde],["Verificar","Conferir no log se o ataque parou.",C.azul]];
+PA.forEach((p,i)=>{const x=190+i*300;const g=V.g(B,x,350);V.el("rect",{x:-135,y:-130,width:270,height:260,rx:18,fill:p[2],"fill-opacity":.2,stroke:p[2],"stroke-width":4},g);V.text(g,(i+1)+"",-100,-70,{s:54,w:800,c:p[2]});V.text(g,p[0],0,-20,{s:32,w:800});
+  const w=p[1].split(" ");let a="",b="",c="";w.forEach(t=>{if((a+" "+t).trim().length<=17&&!b)a=(a+" "+t).trim();else if((b+" "+t).trim().length<=17&&!c)b=(b+" "+t).trim();else c=(c+" "+t).trim();});
+  V.text(g,a,0,28,{s:20,w:400,c:"#dbe8f6"});V.text(g,b,0,56,{s:20,w:400,c:"#dbe8f6"});V.text(g,c,0,84,{s:20,w:400,c:"#dbe8f6"});gsap.set(g,{opacity:0});V.tl.fromTo(g,{opacity:0},{opacity:1,duration:.5},tB+3.6+i*4.6);V.cap(p[0]+". "+p[1],tB+3.4+i*4.6,4.4);
+  if(i<3){const ar=V.el("path",{d:"M"+(x+142)+" 350 L"+(x+158)+" 350",stroke:"#9fb6d0","stroke-width":5,"stroke-linecap":"round",opacity:0},B);V.tl.to(ar,{opacity:1,duration:.3},tB+5.4+i*4.6);}});
+V.cap("Diagnosticar e corrigir falhas é um ciclo. Depois de corrigir, volte ao log para confirmar.",tB+22,4.8);
+V.finish();
+</script></body></html>

@@ -1,0 +1,41 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Senhas fortes e verificação em duas etapas</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"Senhas fortes e verificação em duas etapas"});const C=V.C,tl=V.tl;
+/* Cena A: combinações */
+const A=V.g(V.s,0,0),tA=0.4,dA=26;V.scene(A,tA,dA);
+V.title("Quanto mais longa, mais difícil","Quantas senhas possíveis o atacante precisa testar?",tA,4);
+const ROWS=[["4 números","10 mil",1,C.verm],["6 números","1 milhão",2.2,C.laranja],["8 letras minúsculas","208 bilhões",3.8,C.amarelo],["8 caracteres variados","6 quatrilhões",5.4,C.verde],["Frase longa de 4 palavras","impossível",7,C.azul]];
+ROWS.forEach((r,i)=>{const y=215+i*82;const g=V.g(A,0,0);V.text(g,r[0],90,y+8,{a:"start",s:26,w:700});V.el("rect",{x:420,y:y-24,width:480*(r[2]/7),height:48,rx:10,fill:r[3],stroke:"#0b1626","stroke-width":3},g);V.text(g,r[1],430+480*(r[2]/7)+14,y+8,{a:"start",s:26,w:800,c:r[3]});gsap.set(g,{opacity:0});V.tl.fromTo(g,{opacity:0},{opacity:1,duration:.6},tA+3.6+i*3);});
+V.cap("Uma senha de 4 números tem só 10 mil combinações. Um computador testa isso em instantes.",tA+3.4,3.2);
+V.cap("Com 6 números, 1 milhão. Com 8 letras minúsculas, 208 bilhões.",tA+6.8,3.0);
+V.cap("Misturando letras, números e símbolos, 8 caracteres já chegam a milhões de bilhões.",tA+10,3.8);
+V.cap("Cada caractere a mais multiplica o trabalho do atacante. Frases longas são as mais fortes.",tA+14,5);
+V.cap("Isso vale quando a senha não é previsível. Se for a data de aniversário ou 123456, as contas nem importam.",tA+19.4,5.4);
+/* Cena B: ataque de dicionário */
+const B=V.g(V.s,0,0),tB=tA+dA+.2,dB=30;V.scene(B,tB,dB);
+V.title("Ataque de força bruta e de dicionário","O atacante testa senhas até acertar",tB,4);
+V.pc(B,"Sistema da clínica",1000,360,{w:150,h:100});
+const lista=["123456","senha","clinica123","admin","qwerty","bemviver","12345678","clinica2026"];
+const lg=V.g(B,330,360);V.el("rect",{x:-240,y:-190,width:480,height:380,rx:14,fill:"#08111f",stroke:C.cinzaC,"stroke-width":2},lg);V.text(lg,"Atacante testando",-225,-158,{a:"start",s:19,w:700,c:C.amarelo});
+lista.forEach((s,i)=>{const t=V.text(lg,s,-215,-110+i*40,{a:"start",s:23,w:600,f:'"Liberation Mono",monospace'});gsap.set(t,{opacity:0});const ok=s==="clinica123";V.tl.to(t,{opacity:1,duration:.15},tB+4+i*1.6);if(!ok)V.tl.to(t,{opacity:.55,duration:.3},tB+4.8+i*1.6);const r=V.text(lg,ok?"entrou!":"errou",110,-110+i*40,{a:"middle",s:21,w:800,c:ok?C.verm:"#9fb6d0"});gsap.set(r,{opacity:0});V.tl.to(r,{opacity:1,duration:.2},tB+4.6+i*1.6);});
+V.cap("O atacante usa uma lista com as senhas mais comuns e testa uma por uma, de forma automática.",tB+3.4,5);
+V.cap("A senha clinica123 estava na lista. Em poucos segundos o sistema foi aberto.",tB+11.6,5);
+V.cap("Senha com o nome da empresa, datas ou sequências é fácil de adivinhar. Use frases longas e únicas.",tB+17.2,5.6);
+V.cap("Não repita a senha em vários sites: se um vazar, todos os outros caem.",tB+23.4,5.4);
+/* Cena C: duas etapas */
+const Cc=V.g(V.s,0,0),tC=tB+dB+.2,dC=26;V.scene(Cc,tC,dC);
+V.title("Verificação em duas etapas","Senha mais um segundo fator",tC,4);
+V.pc(Cc,"Atacante",230,360,{w:140,h:92,c:C.verm});
+const ph=V.g(Cc,1000,370);V.el("rect",{x:-70,y:-120,width:140,height:240,rx:20,fill:C.azulE,stroke:"#0b1626","stroke-width":4},ph);V.el("rect",{x:-58,y:-102,width:116,height:190,rx:8,fill:"#0d2744"},ph);V.text(ph,"Seu celular",0,150,{s:20,w:600});
+const codigo=V.g(ph,0,-10);V.text(codigo,"Código",0,-20,{s:17,w:500,c:"#9fb6d0"});V.text(codigo,"482 917",0,16,{s:26,w:800,f:'"Liberation Mono",monospace'});
+const srv=V.server(Cc,"Sistema",620,350,{c:C.azul,w:120,h:100});
+const k=V.pkt(Cc,"senha certa",{c:C.laranja,w:170});
+V.cap("Agora o atacante descobriu a senha. Em um sistema só com senha, ele entraria.",tC+3.2,5);
+V.travel(k,[[260,300],[540,300]],tC+3.6,320);
+const bl=V.cross(Cc,620,260,22);gsap.set(bl,{opacity:0});V.pop(bl,tC+5.4);
+V.cap("Com a verificação em duas etapas, o sistema pede também um código que só chega ao seu celular.",tC+8.4,5.4);
+V.tl.to(k,{opacity:0,duration:.3},tC+5.6);V.tl.fromTo(codigo,{opacity:0},{opacity:1,duration:.5},tC+9);
+V.cap("O atacante não tem o celular, então não consegue o código e não entra.",tC+14.2,5);
+V.cap("A senha prova o que você sabe. O código prova o que você tem. Juntos, protegem muito mais.",tC+19.8,5.4);
+V.finish();
+</script></body></html>

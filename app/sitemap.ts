@@ -67,7 +67,7 @@ export default function Sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
     {
-      url: `${BASE_URL}/curso-informatica-essencial-redes-aula-1`,
+      url: `${BASE_URL}/curso-informatica-essencial-redes-aula-2`,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.5,

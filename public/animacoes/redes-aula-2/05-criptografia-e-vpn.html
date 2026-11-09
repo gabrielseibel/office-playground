@@ -1,0 +1,48 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Criptografia, HTTPS e VPN</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"Criptografia, HTTPS e VPN"});const C=V.C,tl=V.tl;
+/* Cena A: cifra de César */
+const A=V.g(V.s,0,0),tA=0.4,dA=28;V.scene(A,tA,dA);
+V.title("Criptografia: embaralhar para proteger","Um exemplo antigo: a cifra de César",tA,4);
+const PL="SIGILO",CI="VLJLOR";
+V.text(A,"Mensagem original",640,185,{s:24,w:600,c:"#9fb6d0"});V.text(A,"Mensagem cifrada",640,520,{s:24,w:600,c:"#9fb6d0"});
+const cx=640-(PL.length-1)*55;const orig=[],cif=[];
+for(let i=0;i<PL.length;i++){const g=V.g(A,cx+i*110,250);V.el("rect",{x:-40,y:-45,width:80,height:90,rx:12,fill:C.azul,stroke:"#0b1626","stroke-width":3},g);V.text(g,PL[i],0,16,{s:52,w:800});gsap.set(g,{opacity:0});orig.push(g);V.tl.fromTo(g,{opacity:0},{opacity:1,duration:.4},tA+3.4+i*.3);
+  const h=V.g(A,cx+i*110,430);V.el("rect",{x:-40,y:-45,width:80,height:90,rx:12,fill:C.laranja,stroke:"#0b1626","stroke-width":3},h);V.text(h,CI[i],0,16,{s:52,w:800});gsap.set(h,{opacity:0});cif.push(h);
+  const ar=V.text(A,"+3",cx+i*110,350,{s:26,w:800,c:C.amarelo});gsap.set(ar,{opacity:0});V.tl.to(ar,{opacity:1,duration:.3},tA+11+i*.9);V.tl.fromTo(h,{opacity:0},{opacity:1,duration:.5},tA+11.4+i*.9);}
+V.cap("A mensagem SIGILO vai ser protegida antes de sair do computador.",tA+3.2,4.6);
+V.cap("A regra é simples: cada letra anda 3 posições no alfabeto. S vira V, I vira L, G vira J.",tA+7.8,5.4);
+V.cap("Resultado: VLJLOR. Quem não conhece a regra não entende nada.",tA+17.4,4.6);
+V.cap("Essa regra secreta é a chave. Hoje a criptografia usa chaves matemáticas muito mais complexas.",tA+22,5.4);
+/* Cena B: interceptação */
+const B=V.g(V.s,0,0),tB=tA+dA+.2,dB=30;V.scene(B,tB,dB);
+V.title("Sem e com criptografia","O que um espião vê no caminho",tB,4);
+V.pc(B,"Recepção",180,380,{w:130,h:88});V.server(B,"Servidor",1100,370,{c:C.azul,w:110,h:92});
+V.line(B,260,375,1030,375,{c:C.azulC,w:6});
+const spy=V.g(B,640,260);V.el("circle",{r:30,fill:C.verm,stroke:"#0b1626","stroke-width":3},spy);V.text(spy,"espião",0,56,{s:20,w:600});V.el("path",{d:"M-18 -6 L18 -6 M-14 6 Q0 20 14 6",stroke:"#fff","stroke-width":4,fill:"none","stroke-linecap":"round"},spy);
+const bub=V.g(B,640,175);V.el("rect",{x:-200,y:-34,width:400,height:68,rx:14,fill:"#fff"},bub);const bt=V.text(bub,"",0,12,{s:28,w:800,c:"#0b1626"});
+const m1=V.pkt(B,"senha: 1234",{c:C.verm,w:190});
+V.cap("Sem criptografia, a mensagem viaja aberta. O espião lê tudo o que passa.",tB+3.4,5);
+V.travel(m1,[[200,375],[1060,375]],tB+3.8,170);
+V.tl.set(bt,{textContent:"senha: 1234"},tB+7);V.tl.fromTo(bub,{opacity:0},{opacity:1,duration:.3},tB+6.6);V.tl.to(bub,{opacity:0,duration:.3},tB+11);
+const m2=V.pkt(B,"x7#Kp9!q",{c:C.verde,w:190});
+V.cap("Com criptografia, a mesma senha vai embaralhada. O espião vê só símbolos.",tB+12.4,5);
+V.travel(m2,[[200,375],[1060,375]],tB+12.8,170);
+V.tl.set(bt,{textContent:"x7#Kp9!q"},tB+16);V.tl.fromTo(bub,{opacity:0},{opacity:1,duration:.3},tB+15.6);V.tl.to(bub,{opacity:0,duration:.3},tB+19.6);
+V.cap("Só o servidor, que tem a chave, consegue desfazer o embaralhamento e ler a mensagem.",tB+20.4,5.2);
+V.cap("É isso que o cadeado do navegador e o HTTPS fazem em cada site seguro.",tB+25.4,4.4);
+/* Cena C: VPN */
+const D=V.g(V.s,0,0),tD=tB+dB+.2,dD=28;V.scene(D,tD,dD);
+V.title("VPN: um túnel protegido pela internet","Para acessar a clínica de fora",tD,4);
+V.pc(D,"Notebook da médica",170,420,{w:130,h:88,s:18});V.server(D,"Servidor da clínica",1110,390,{c:C.azul,w:110,h:92});
+V.cloud(D,"Internet",640,330,{s:28});
+const tun=V.el("rect",{x:240,y:395,width:780,height:50,rx:25,fill:C.verde,"fill-opacity":.25,stroke:C.verde,"stroke-width":4,"stroke-dasharray":"16 10",opacity:0},D);
+V.text(D,"túnel VPN",640,552,{s:24,w:800,c:C.verde});
+V.cap("A médica está em um Wi-Fi de café, que qualquer pessoa pode espionar.",tD+3.2,4.6);
+V.tl.to(tun,{opacity:1,duration:.7},tD+8);
+V.cap("A VPN cria um túnel criptografado entre o notebook dela e a rede da clínica.",tD+8,5.2);
+const dd=V.pkt(D,"prontuário",{c:C.laranja,w:150});V.travel(dd,[[250,420],[1020,420]],tD+13.8,150);V.tl.to(dd,{opacity:0,duration:.3},tD+19);
+V.cap("Tudo o que passa pelo túnel viaja cifrado. Quem está no café não consegue ler nada.",tD+13.6,5.4);
+V.cap("A VPN também faz o acesso parecer feito de dentro da rede, sob as regras do firewall.",tD+19.6,5.4);
+V.finish();
+</script></body></html>

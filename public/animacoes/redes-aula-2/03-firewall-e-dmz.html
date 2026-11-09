@@ -1,0 +1,41 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Firewall e DMZ</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"Firewall e DMZ"});const C=V.C,tl=V.tl;
+const A=V.g(V.s,0,0),tA=0.4,dA=62;V.scene(A,tA,dA);
+V.title("Firewall: o porteiro da rede","Regras decidem o que entra e o que sai",tA,4);
+/* mapa */
+const cl=V.cloud(A,"Internet",150,345,{s:26});
+const wall=V.g(A,430,372);for(let r=0;r<10;r++)for(let c=0;c<2;c++)V.el("rect",{x:-34+c*34+(r%2?-12:0),y:-190+r*38,width:34,height:36,fill:C.laranja,stroke:"#0b1626","stroke-width":2},wall);
+V.text(A,"Firewall",430,152,{s:24,w:800,c:C.laranja});
+const dmz=V.g(A,730,230);V.el("rect",{x:-152,y:-100,width:370,height:200,rx:16,fill:C.amarelo,"fill-opacity":.12,stroke:C.amarelo,"stroke-width":4,"stroke-dasharray":"14 8"},dmz);V.text(dmz,"DMZ",-170,-70,{a:"start",s:24,w:800,c:C.amarelo});
+V.server(A,"Site da clínica",730,225,{c:C.amarelo,w:100,h:84});
+const lan=V.g(A,900,480);V.el("rect",{x:-340,y:-100,width:680,height:200,rx:16,fill:C.azul,"fill-opacity":.14,stroke:C.azulC,"stroke-width":4},lan);V.text(lan,"Rede interna da clínica",-325,-68,{a:"start",s:24,w:800,c:C.azulC});
+V.server(A,"Prontuários",690,490,{c:C.azul,w:90,h:80,s:19});V.pc(A,"Recepção",900,480,{w:90,h:60,s:19});V.pc(A,"Consultório",1090,480,{w:90,h:60,s:19});
+V.cap("O firewall fica entre a internet e a rede da clínica. Toda conversa passa por ele.",tA+3.6,5);
+V.cap("A DMZ é uma área separada para o que precisa ficar visível de fora, como o site da clínica.",tA+9,5.2);
+V.cap("A rede interna, com os prontuários, fica protegida atrás do firewall.",tA+14.6,4.4);
+/* pacote 1: site permitido */
+const P1=V.pkt(A,"quero ver o site",{c:C.verde,w:200});
+V.cap("Um visitante pede para ver o site. A regra permite, porque o site está na DMZ.",tA+19.6,5);
+let e=V.travel(P1,[[190,225],[430,225],[600,225]],tA+19.8,260);V.tl.to(P1,{opacity:0,duration:.3},e);
+V.ring(A,730,225,e,C.verde,120);
+/* pacote 2: prontuário bloqueado */
+const P2=V.pkt(A,"abrir prontuários",{c:C.verm,w:200});const X2=V.cross(A,400,335,22);gsap.set(X2,{opacity:0});
+V.cap("Alguém de fora tenta abrir os prontuários. Nenhuma regra permite. O firewall bloqueia.",tA+26,5.2);
+e=V.travel(P2,[[190,335],[395,335]],tA+26.2,260);V.tl.to(P2,{x:300,opacity:0,duration:.6},e);V.pop(X2,e);V.tl.to(X2,{opacity:0,duration:.4},e+1.6);
+/* pacote 3: saída permitida */
+const P3=V.pkt(A,"abrir notícias",{c:C.verde,w:200});
+V.cap("A recepção abre um site de notícias. O firewall permite a saída para a internet.",tA+32.4,5);
+e=V.travel(P3,[[900,418],[900,395],[430,395],[200,395]],tA+32.6,300);V.tl.to(P3,{opacity:0,duration:.3},e);
+/* ddos */
+V.title("E se vierem milhares de pedidos?","Negação de serviço (DDoS)",tA+38.6,4.6);
+const flood=[];for(let i=0;i<10;i++){const p=V.pkt(A,"pedido",{c:C.verm,w:110,s:16});flood.push(p);}
+V.cap("Milhares de pedidos chegam ao site ao mesmo tempo, para derrubá-lo. É um ataque de negação de serviço.",tA+39,5.4);
+flood.forEach((p,i)=>{const y=190+(i%5)*34;const t0=tA+40.2+i*.35;const ee=V.travel(p,[[190,y],[395,y]],t0,420);V.tl.to(p,{opacity:0,duration:.25},ee);});
+const lg=V.g(A,1105,120);V.el("rect",{x:-165,y:-65,width:330,height:130,rx:12,fill:"#08111f",stroke:C.cinzaC,"stroke-width":2},lg);V.text(lg,"LOG DO FIREWALL",-152,-35,{a:"start",s:17,w:700,c:C.amarelo});V.text(lg,"5.200 pedidos em 1 min",-152,-5,{a:"start",s:20,w:600,f:'"Liberation Mono",monospace'});V.text(lg,"origem 203.0.113.50 BLOQUEADO",-152,25,{a:"start",s:17,w:600,c:"#f6b0b0",f:'"Liberation Mono",monospace'});V.text(lg,"regra: limite por origem",-152,50,{a:"start",s:17,w:600,c:"#9fb6d0",f:'"Liberation Mono",monospace'});
+gsap.set(lg,{opacity:0});V.tl.fromTo(lg,{opacity:0},{opacity:1,duration:.5},tA+44);
+V.cap("O firewall limita os pedidos que vêm do mesmo lugar, bloqueia e registra no log.",tA+44.8,5);
+V.cap("Regra de ouro: o que não foi permitido é bloqueado. Quanto menos portas abertas, menos riscos.",tA+51.2,5.6);
+V.cap("Firewall e DMZ trabalham juntos: um filtra a entrada e o outro isola o que precisa ficar exposto.",tA+57,4.6);
+V.finish();
+</script></body></html>

@@ -1,0 +1,35 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Phishing e engenharia social</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"Phishing e engenharia social"});const C=V.C,tl=V.tl;
+const A=V.g(V.s,0,0),tA=0.4,dA=38;V.scene(A,tA,dA);
+V.title("Phishing: o golpe da mensagem falsa","Quatro sinais para desconfiar",tA,4);
+/* e-mail */
+const m=V.g(A,400,355);V.el("rect",{x:-330,y:-215,width:660,height:430,rx:16,fill:"#f4f7fb",stroke:C.azulC,"stroke-width":4},m);
+V.el("rect",{x:-330,y:-215,width:660,height:52,rx:16,fill:C.azulE},m);V.text(m,"Caixa de entrada",-310,-181,{a:"start",s:22});
+V.text(m,"De: suporte@banco-valeseguro.example",-310,-132,{a:"start",s:21,c:"#243b55",w:600});
+V.text(m,"Assunto: URGENTE: sua conta será bloqueada hoje",-310,-96,{a:"start",s:21,c:"#c0392b",w:700});
+V.text(m,"Prezado cliente,",-310,-48,{a:"start",s:21,c:"#243b55",w:400});
+V.text(m,"Detectamos atividade suspeita. Clique aqui e",-310,-14,{a:"start",s:21,c:"#243b55",w:400});
+V.text(m,"confirme sua senha em 1 hora, ou perderá o acesso.",-310,20,{a:"start",s:21,c:"#243b55",w:400});
+const btn=V.g(m,-170,95);V.el("rect",{x:-150,y:-26,width:300,height:52,rx:10,fill:C.azul},btn);V.text(btn,"Confirmar minha senha",0,8,{s:21,w:700});
+V.text(m,"Atenciosamente, Equipe de Segurança",-310,170,{a:"start",s:19,c:"#6b7a90",w:400});
+gsap.set(m,{opacity:0});V.tl.fromTo(m,{opacity:0,x:-40},{opacity:1,x:0,duration:.6},tA+3.6);
+V.cap("A recepcionista abre um e-mail que parece ser do banco. Parece sério, mas tem sinais de golpe.",tA+3.4,5);
+/* sinais */
+const S=[{t:"1. Remetente estranho",d:"O endereço não é o do banco de verdade.",r:[78,198,640,40]},{t:"2. Urgência e ameaça",d:"Pressa para você não pensar.",r:[78,234,640,44]},{t:"3. Botão suspeito",d:"O link leva a outro endereço.",r:[78,424,310,56]},{t:"4. Pede senha por e-mail",d:"Nenhum serviço sério faz isso.",r:[78,318,640,76]}];
+S.forEach((s,i)=>{const tt=tA+9.2+i*6;
+  const r=V.el("rect",{x:s.r[0],y:s.r[1],width:s.r[2],height:s.r[3],rx:10,fill:"none",stroke:C.verm,"stroke-width":5,opacity:0},A);
+  const card=V.g(A,985,175+i*115);V.el("rect",{x:-185,y:-50,width:370,height:100,rx:14,fill:C.verm,"fill-opacity":.18,stroke:C.verm,"stroke-width":3},card);
+  V.text(card,s.t,-168,-12,{a:"start",s:23,w:800});V.text(card,s.d,-168,22,{a:"start",s:17,w:400,c:"#dbe8f6"});gsap.set(card,{opacity:0});
+  V.tl.to(r,{opacity:1,duration:.3,repeat:3,yoyo:true},tt);V.tl.set(r,{opacity:1},tt+1.3);V.tl.fromTo(card,{opacity:0,x:40},{opacity:1,x:0,duration:.5},tt+.2);
+  V.cap(s.t.slice(3)+". "+s.d,tt,5.4);});
+V.cap("Quanto mais sinais juntos, maior a chance de golpe. Na dúvida, não clique.",tA+33,4.8);
+/* cena B: o que fazer + engenharia social */
+const B=V.g(V.s,0,0),tB=tA+dA+.2,dB=30;V.scene(B,tB,dB);
+V.title("E o que fazer com um e-mail suspeito?","Também vale para ligações e mensagens",tB,4);
+const passos=[["Não clique em nada","Nem em links, nem em anexos."],["Confirme por outro caminho","Digite o endereço oficial ou ligue para o número oficial."],["Avise a equipe de TI","Os colegas podem receber a mesma mensagem."],["Se já clicou, troque a senha","E avise na hora para limitar o estrago."]];
+passos.forEach((p,i)=>{const g=V.g(B,330+(i%2)*620,230+Math.floor(i/2)*190);V.el("rect",{x:-290,y:-75,width:580,height:150,rx:16,fill:C.verde,"fill-opacity":.2,stroke:C.verde,"stroke-width":4},g);V.text(g,(i+1)+"",-255,12,{s:56,w:800,c:C.verde});V.text(g,p[0],-205,-14,{a:"start",s:27,w:800});V.text(g,p[1],-205,26,{a:"start",s:19,w:400,c:"#dbe8f6"});gsap.set(g,{opacity:0});V.tl.fromTo(g,{opacity:0,y:30},{opacity:1,y:0,duration:.5},tB+3.6+i*3.6);V.cap(p[0]+". "+p[1],tB+3.4+i*3.6,3.8);});
+V.cap("Engenharia social é enganar a pessoa, e não o computador. Alguém se passa pela TI e pede sua senha.",tB+18.4,5);
+V.cap("Ninguém da TI de verdade precisa da sua senha. Desconfie sempre de pedido de senha.",tB+24.2,5);
+V.finish();
+</script></body></html>

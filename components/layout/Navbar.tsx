@@ -55,10 +55,10 @@ const items: {
     icon: Cpu,
   },
   {
-    label: "Curso - Informática Essencial - Redes, Aula 1",
+    label: "Curso - Informática Essencial - Redes, Aula 2",
     eyebrow: "Curso - Redes",
-    short: "Aula 1",
-    href: "/curso-informatica-essencial-redes-aula-1",
+    short: "Aula 2",
+    href: "/curso-informatica-essencial-redes-aula-2",
     icon: Network,
   },
   { label: "Laboratório de Redes", href: "/laboratorio-de-redes", icon: FlaskConical },

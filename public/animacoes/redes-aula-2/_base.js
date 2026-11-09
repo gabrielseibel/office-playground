@@ -1,4 +1,4 @@
-/* Base das animações da Aula 1 de Redes (Informática Essencial, Lajeado 2026.25.60).
+/* Base das animações da Aula 2 de Redes (Informática Essencial, Lajeado 2026.25.60).
    Cada animação é um arquivo HTML único que usa esta base: palco 1280x720 com SVG, legendas
    sincronizadas e uma linha do tempo GSAP. Parâmetros de URL: ?t=N (congela no segundo N),
    ?controls=0 (esconde a barra), ?autoplay=0 (começa parado), ?loop=1 (repete). */
