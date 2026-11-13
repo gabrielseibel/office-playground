@@ -1,0 +1,24 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cronograma da instalação</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"Cronograma da instalação"});const C=V.C,tl=V.tl;
+const R=(p,x,y,w,h,f,s,rx)=>V.el("rect",{x:x,y:y,width:w,height:h,rx:rx||10,fill:f,stroke:s||"#0b1626","stroke-width":3},p);
+const SH=(g,t)=>{gsap.set(g,{opacity:0});V.tl.to(g,{opacity:1,duration:.4},t);};
+const OK=(p,x,y)=>{const g=V.g(p,x,y);V.el("path",{d:"M-18 0L-6 14L20 -16",stroke:C.verde,"stroke-width":9,fill:"none","stroke-linecap":"round","stroke-linejoin":"round"},g);return g;};
+const A=V.g(V.s,0,0),tA=0.4,dA=46;V.scene(A,tA,dA);
+V.title("Cronograma de sábado","Duas pessoas, dois pendrives, três computadores",tA,4);
+const X0=190,K=6.5;
+for(let m=0;m<150;m+=30){const x=X0+m*K;V.el("line",{x1:x,y1:170,x2:x,y2:500,stroke:"#2b3d57","stroke-width":2},A);const h=8+Math.floor(m/60),mi=m%60;V.text(A,String(h).padStart(2,"0")+"h"+(mi?"30":"00"),x,160,{s:18,w:600,c:"#cfe0f2"});}
+V.text(A,"10h30",X0+150*K,160,{s:18,w:600,c:"#cfe0f2"});
+const ROWS=[["PC 1",0,230],["PC 5",0,320],["PC 4",45,410]];
+const COR=[C.laranja,C.azul,C.verde],DUR=[45,45,15],NOM=["Instalar","Drivers e atualizações","Teste"];
+ROWS.forEach((r,ri)=>{V.text(A,r[0],90,r[2]+36,{s:26,w:800});let m=r[1];const t0=tA+(ri<2?4:16)+(ri===1?1.2:0);
+ DUR.forEach((d,k)=>{const g=V.g(A,0,0);R(g,X0+m*K,r[2],d*K,56,COR[k],"#0b1626",6);if(d>20)V.text(g,NOM[k],X0+m*K+d*K/2,r[2]+35,{s:k===1?15:19,w:700});SH(g,t0+k*1.8);m+=d;});});
+V.cap("Sábado, das 08h às 12h. O PC 1 e o PC 5 começam juntos, cada um com seu pendrive.",tA+3.6,6);
+V.cap("Cada instalação leva 45 min. Depois vêm 45 min de drivers e atualizações, e 15 min de teste com o usuário.",tA+9.6,6);
+V.cap("O pendrive só é usado na instalação. Às 08h45 os dois pendrives ficam livres.",tA+15.6,5);
+V.cap("Então o PC 4 já começa a instalar às 08h45, sem esperar os outros dois terminarem.",tA+21.6,6);
+const lim=V.g(A,0,0);V.el("line",{x1:X0+150*K,y1:200,x2:X0+150*K,y2:480,stroke:C.verm,"stroke-width":4,"stroke-dasharray":"10 8"},lim);SH(lim,tA+28);
+V.cap("A última máquina termina às 10h30. Sobra uma hora e meia antes do meio-dia para imprevistos.",tA+28.2,6.4);
+V.cap("Planejar é achar o que pode acontecer ao mesmo tempo. Foi isso que economizou uma hora.",tA+36,6);
+V.finish();
+</script></body></html>

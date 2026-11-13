@@ -23,7 +23,6 @@ import {
   Compass,
   Cpu,
   Network,
-  FlaskConical,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "./ThemeProvider";
@@ -46,22 +45,19 @@ const items: {
   { label: "Sala de Aula", href: "/sala-de-aula", icon: GraduationCap },
   { label: "Desafio Mestre", href: "/desafio-mestre", icon: Crown },
   {
-    label: "Curso - Informática Essencial - Aula 5",
-    // No menu do computador o nome longo vai em duas linhas para não
-    // empurrar os outros itens; no menu do celular aparece por extenso.
-    eyebrow: "Curso - Informática Essencial",
-    short: "Aula 5",
-    href: "/curso-informatica-essencial-aula-5",
+    label: "Informática Essencial UC2",
+    eyebrow: "Informática Essencial",
+    short: "UC2",
+    href: "/informatica-essencial-uc2",
     icon: Cpu,
   },
   {
-    label: "Curso - Informática Essencial - Redes, Aula 2",
-    eyebrow: "Curso - Redes",
-    short: "Aula 2",
-    href: "/curso-informatica-essencial-redes-aula-2",
+    label: "Informática Essencial UC3",
+    eyebrow: "Informática Essencial",
+    short: "UC3",
+    href: "/informatica-essencial-uc3",
     icon: Network,
   },
-  { label: "Laboratório de Redes", href: "/laboratorio-de-redes", icon: FlaskConical },
   { label: "Dicas", href: "/#dicas", icon: Lightbulb },
   { label: "Sobre", href: "/#sobre", icon: Info },
 ];

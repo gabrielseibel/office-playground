@@ -642,7 +642,7 @@ export function LaboratorioRedes() {
 
       <div className="mx-auto max-w-6xl px-4 md:px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <Link href="/#inicio" className="inline-flex items-center gap-1 text-sm text-muted-foreground transition hover:text-foreground">
+          <Link href="/informatica-essencial-uc3" className="inline-flex items-center gap-1 text-sm text-muted-foreground transition hover:text-foreground">
             <ChevronLeft className="h-4 w-4" /> voltar
           </Link>
           <div className="mt-3">

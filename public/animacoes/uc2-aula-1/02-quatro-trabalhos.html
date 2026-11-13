@@ -1,0 +1,34 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>O que o sistema operacional faz</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"O que o sistema operacional faz"});const C=V.C,tl=V.tl;
+const R=(p,x,y,w,h,f,s,rx)=>V.el("rect",{x:x,y:y,width:w,height:h,rx:rx||10,fill:f,stroke:s||"#0b1626","stroke-width":3},p);
+const SH=(g,t)=>{gsap.set(g,{opacity:0});V.tl.to(g,{opacity:1,duration:.4},t);};
+const OK=(p,x,y)=>{const g=V.g(p,x,y);V.el("path",{d:"M-18 0L-6 14L20 -16",stroke:C.verde,"stroke-width":9,fill:"none","stroke-linecap":"round","stroke-linejoin":"round"},g);return g;};
+const A=V.g(V.s,0,0),tA=0.4,dA=50;V.scene(A,tA,dA);
+V.title("Quatro trabalhos do sistema operacional","Processos, memória, dispositivos e arquivos",tA,4);
+function quad(x,y,t,tit,cor){const g=V.g(A,0,0);R(g,x,y,540,190,"#12243b",cor);V.text(g,tit,x+20,y+38,{a:"start",s:28,w:800,c:cor});SH(g,t);return g;}
+/* processos */
+let g1=quad(60,130,tA+3.5,"1. Processos",C.verde);
+const pc=[C.verde,C.azulC,C.laranja];for(let i=0;i<12;i++){const c=V.g(A,0,0);R(c,90+i*42,200,38,50,pc[i%3],"#0b1626",6);SH(c,tA+5+i*.35);}
+const tx1=V.text(A,"Word, Chrome e música se revezam no processador",330,285,{s:20,w:600,c:"#cfe0f2"});SH(tx1,tA+9.4);
+V.cap("Processos: o sistema divide o tempo do processador entre os programas abertos, tão rápido que parece simultâneo.",tA+3.6,5.6);
+/* memoria */
+let g2=quad(680,130,tA+11.5,"2. Memória",C.azulC);
+const ram=[["Word",3,C.verde],["Chrome",5,C.azul],["Música",2,C.laranja],["Livre",2,C.cinza]];let cx=0;
+ram.forEach((r,k)=>{for(let j=0;j<r[1];j++){const c=V.g(A,0,0);R(c,710+(cx+j)*42,200,38,50,r[2],"#0b1626",6);SH(c,tA+13+k*1.2);}const tx2=V.text(A,r[0],710+cx*42+r[1]*21-2,278,{s:17,w:600,c:"#cfe0f2"});SH(tx2,tA+13+k*1.2);cx+=r[1];});
+V.cap("Memória: o sistema reserva um pedaço da RAM para cada programa e avisa quando ela está acabando.",tA+11.6,5.6);
+/* dispositivos */
+let g3=quad(60,360,tA+19.5,"3. Dispositivos",C.laranja);
+const d1=V.g(A,0,0);R(d1,90,430,130,60,C.cinza);V.text(d1,"Pen drive",155,468,{s:20,w:700});
+const d2=V.g(A,0,0);R(d2,270,430,110,60,C.roxo);V.text(d2,"Driver",325,468,{s:20,w:700});
+const d3=V.g(A,0,0);R(d3,430,430,140,60,C.azul);V.text(d3,"Sistema",500,468,{s:20,w:700});
+[d1,d2,d3].forEach((d,i)=>SH(d,tA+21+i*1.2));
+[[220,460,270],[380,460,430]].forEach((l,i)=>{const ln=V.el("line",{x1:l[0],y1:l[1],x2:l[2],y2:l[1],stroke:C.amarelo,"stroke-width":5},A);SH(ln,tA+21.6+i*1.2);});
+V.cap("Dispositivos: o sistema usa o driver para reconhecer o pen drive, a impressora, o mouse e as outras peças.",tA+19.6,5.6);
+/* arquivos */
+let g4=quad(680,360,tA+27.5,"4. Arquivos",C.amarelo);
+[["C:",0],["Documentos",1],["Contrato.docx",2]].forEach((r,i)=>{const g=V.g(A,0,0);R(g,710+r[1]*40,425+i*44,r[1]===2?200:150,36,i===2?C.verde:C.azul,"#0b1626",6);V.text(g,r[0],710+r[1]*40+(r[1]===2?100:75),450+i*44,{s:19,w:700});SH(g,tA+29+i*1.2);});
+V.cap("Arquivos: o sistema organiza pastas e arquivos para você encontrar o que salvou no dia seguinte.",tA+27.6,5.6);
+V.cap("Quatro trabalhos, um sistema só. É por isso que ele é o programa mais importante do computador.",tA+36,6);
+V.finish();
+</script></body></html>

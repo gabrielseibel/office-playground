@@ -1,0 +1,25 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>As camadas do computador</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"As camadas do computador"});const C=V.C,tl=V.tl;
+const R=(p,x,y,w,h,f,s,rx)=>V.el("rect",{x:x,y:y,width:w,height:h,rx:rx||10,fill:f,stroke:s||"#0b1626","stroke-width":3},p);
+const SH=(g,t)=>{gsap.set(g,{opacity:0});V.tl.to(g,{opacity:1,duration:.4},t);};
+const OK=(p,x,y)=>{const g=V.g(p,x,y);V.el("path",{d:"M-18 0L-6 14L20 -16",stroke:C.verde,"stroke-width":9,fill:"none","stroke-linecap":"round","stroke-linejoin":"round"},g);return g;};
+const A=V.g(V.s,0,0),tA=0.4,dA=44;V.scene(A,tA,dA);
+V.title("As camadas do computador","Quem fala com quem quando você salva um arquivo",tA,4);
+const L=[["Você, o usuário",C.cinza,165],["Aplicativos (Word, Chrome)",C.verde,265],["Sistema operacional (Windows)",C.azul,365],["Hardware (processador, RAM, SSD)",C.laranja,465]];
+L.forEach((l,i)=>{const g=V.g(A,0,0);R(g,300,l[2],680,80,l[1]);V.text(g,l[0],640,l[2]+50,{s:28,w:700});SH(g,tA+3.5+i*1.4);});
+V.cap("O computador funciona em camadas. Em cima fica você, embaixo ficam as peças.",tA+3.4,5);
+V.cap("Você clica em Salvar no Word. O pedido desce, camada por camada.",tA+9.4,4.6);
+const P=V.pkt(A,"Salvar",{c:C.amarelo,w:140});
+let e=V.travel(P,[[640,205],[640,305],[640,405],[640,505]],tA+10,110);V.tl.to(P,{opacity:0,duration:.3},e);
+V.cap("O Word não grava nada sozinho. Ele pede ao sistema operacional, que decide como usar o SSD.",tA+14.4,5.4);
+const Q=V.pkt(A,"Pronto",{c:C.verde,w:140});
+e=V.travel(Q,[[640,505],[640,405],[640,305],[640,205]],tA+20,110);V.tl.to(Q,{opacity:0,duration:.3},e);
+V.cap("A resposta sobe de volta e o Word mostra: arquivo salvo.",tA+20.4,4.6);
+const dr=V.g(A,0,0);R(dr,1010,418,220,54,C.roxo);V.text(dr,"Driver",1120,454,{s:24,w:700});SH(dr,tA+26);
+const fw=V.g(A,0,0);R(fw,1010,528,220,54,"#00838F");V.text(fw,"Firmware",1120,564,{s:24,w:700});SH(fw,tA+31);
+V.cap("O driver ensina o sistema operacional a conversar com cada peça, como a impressora ou a placa de vídeo.",tA+26,5);
+V.cap("O firmware é um programa gravado dentro de um chip da peça. A BIOS ou UEFI é o firmware da placa-mãe.",tA+31.4,5.6);
+V.cap("Sem sistema operacional, os aplicativos não têm como usar as peças.",tA+38,4.6);
+V.finish();
+</script></body></html>

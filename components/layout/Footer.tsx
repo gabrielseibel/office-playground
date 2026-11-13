@@ -61,24 +61,13 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link
-                  className="hover:text-foreground"
-                  href="/curso-informatica-essencial-aula-5"
-                >
-                  🖥️ Curso: Informática Essencial — Aula 5
+                <Link className="hover:text-foreground" href="/informatica-essencial-uc2">
+                  🖥️ Informática Essencial UC2
                 </Link>
               </li>
               <li>
-                <Link
-                  className="hover:text-foreground"
-                  href="/curso-informatica-essencial-redes-aula-2"
-                >
-                  🌐 Curso: Redes — Aula 2
-                </Link>
-              </li>
-              <li>
-                <Link className="hover:text-foreground" href="/laboratorio-de-redes">
-                  🧪 Laboratório de Redes
+                <Link className="hover:text-foreground" href="/informatica-essencial-uc3">
+                  🌐 Informática Essencial UC3
                 </Link>
               </li>
             </ul>

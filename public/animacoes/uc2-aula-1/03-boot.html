@@ -1,0 +1,21 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Como o computador liga</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"Como o computador liga"});const C=V.C,tl=V.tl;
+const R=(p,x,y,w,h,f,s,rx)=>V.el("rect",{x:x,y:y,width:w,height:h,rx:rx||10,fill:f,stroke:s||"#0b1626","stroke-width":3},p);
+const SH=(g,t)=>{gsap.set(g,{opacity:0});V.tl.to(g,{opacity:1,duration:.4},t);};
+const OK=(p,x,y)=>{const g=V.g(p,x,y);V.el("path",{d:"M-18 0L-6 14L20 -16",stroke:C.verde,"stroke-width":9,fill:"none","stroke-linecap":"round","stroke-linejoin":"round"},g);return g;};
+const A=V.g(V.s,0,0),tA=0.4,dA=46;V.scene(A,tA,dA);
+V.title("Do botão ao sistema operacional","O que acontece nos primeiros segundos",tA,4);
+const E=[["1. Liga","aperte o","botão",C.cinza],["2. Firmware","testa as peças","(POST)",C.roxo],["3. Boot","escolhe de onde","carregar",C.laranja],["4. Carregador","acha o sistema","no disco",C.amarelo],["5. Sistema","abre a área","de trabalho",C.verde]];
+E.forEach((x,i)=>{const g=V.g(A,0,0);R(g,40+i*236,250,208,150,x[3]);V.text(g,x[0],144+i*236,300,{s:25,w:800});V.text(g,x[1],144+i*236,340,{s:19,w:600,c:"#0b1626"});V.text(g,x[2],144+i*236,366,{s:19,w:600,c:"#0b1626"});SH(g,tA+3.5+i*1.6);if(i<4){const ar=V.el("path",{d:"M"+(250+i*236)+" 325L"+(274+i*236)+" 325",stroke:C.claro,"stroke-width":5,"stroke-linecap":"round"},A);SH(ar,tA+4+i*1.6);}});
+V.cap("Ao ligar, o computador ainda não sabe o que é o Windows. Quem acorda primeiro é o firmware da placa-mãe.",tA+3.6,5.8);
+const P=V.pkt(A,"energia",{c:C.amarelo,w:120});
+let e=V.travel(P,[[144,215],[380,215],[616,215],[852,215],[1088,215]],tA+10,170);V.tl.to(P,{opacity:0,duration:.3},e);
+V.cap("O firmware faz o POST: testa processador, memória e teclado. Depois escolhe o dispositivo de boot.",tA+10.4,6);
+V.cap("A ordem de boot decide quem vem primeiro: disco, pendrive ou rede. É aqui que se escolhe o pendrive para instalar.",tA+17,6.6);
+V.cap("O carregador de boot encontra o sistema operacional no disco e o entrega ao processador.",tA+24.4,5.2);
+const er=V.g(A,0,0);R(er,250,470,780,90,"#3a1212",C.verm);V.text(er,"No bootable device. Insert boot disk and press any key.",640,525,{s:24,w:700,c:C.verm});SH(er,tA+31);
+V.cap("Sem sistema no disco e sem pendrive de instalação, aparece uma mensagem como esta.",tA+31.2,5.4);
+V.cap("Setup, CMOS e BIOS são nomes ligados a essa etapa. As configurações ficam gravadas na placa-mãe.",tA+37,6);
+V.finish();
+</script></body></html>

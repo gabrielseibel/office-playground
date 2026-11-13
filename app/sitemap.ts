@@ -61,6 +61,24 @@ export default function Sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
     {
+      url: `${BASE_URL}/informatica-essencial-uc2`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
+      url: `${BASE_URL}/informatica-essencial-uc3`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
+      url: `${BASE_URL}/curso-informatica-essencial-uc2-aula-1`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
       url: `${BASE_URL}/curso-informatica-essencial-aula-5`,
       lastModified: now,
       changeFrequency: "monthly",

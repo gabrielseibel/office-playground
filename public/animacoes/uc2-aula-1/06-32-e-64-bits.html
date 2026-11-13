@@ -1,0 +1,19 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>32 bits e 64 bits</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"32 bits e 64 bits"});const C=V.C,tl=V.tl;
+const R=(p,x,y,w,h,f,s,rx)=>V.el("rect",{x:x,y:y,width:w,height:h,rx:rx||10,fill:f,stroke:s||"#0b1626","stroke-width":3},p);
+const SH=(g,t)=>{gsap.set(g,{opacity:0});V.tl.to(g,{opacity:1,duration:.4},t);};
+const OK=(p,x,y)=>{const g=V.g(p,x,y);V.el("path",{d:"M-18 0L-6 14L20 -16",stroke:C.verde,"stroke-width":9,fill:"none","stroke-linecap":"round","stroke-linejoin":"round"},g);return g;};
+const A=V.g(V.s,0,0),tA=0.4,dA=30;V.scene(A,tA,dA);
+V.title("32 bits ou 64 bits?","Quanta memória o sistema consegue usar",tA,4);
+V.text(A,"Notebook com 16 GB de RAM",640,170,{s:28,w:800,c:C.azulC});
+function linha(y,rot,usa,cor,t){V.text(A,rot,640,y,{s:26,w:700});for(let i=0;i<16;i++){const g=V.g(A,0,0);R(g,128+i*64,y+16,58,70,i<usa?cor:C.cinza,"#0b1626",6);V.text(g,String(i+1),157+i*64,y+60,{s:18,w:700});SH(g,t+i*.15);}}
+linha(240,"Windows de 64 bits",16,C.verde,tA+3.5);
+V.cap("Com Windows de 64 bits, o sistema usa os 16 GB. Cada bloco é 1 GB.",tA+3.6,5);
+linha(400,"Windows de 32 bits",4,C.laranja,tA+11);
+V.cap("Com Windows de 32 bits, o sistema enxerga só cerca de 4 GB. Os outros 12 GB ficam sem uso.",tA+11.2,6);
+const lb=V.g(A,0,0);V.text(lb,"sem uso",800,525,{s:24,w:700,c:C.verm});SH(lb,tA+15);
+V.cap("Por isso, hoje, o normal é instalar o sistema de 64 bits. E o Windows 11 só existe em 64 bits.",tA+19,6);
+V.cap("Para saber qual é o seu: Configurações, Sistema, Sobre, Tipo de sistema.",tA+25,4.6);
+V.finish();
+</script></body></html>
