@@ -21,6 +21,12 @@ const GUIAS = {
         resumo: "Camadas do computador, o que o sistema operacional faz, requisitos do Windows 11 e cronograma de instalação.",
       },
       {
+        href: "/curso-informatica-essencial-uc2-aula-2",
+        titulo: "Aula 2. Sábado de instalação",
+        turma: "Xanxerê 2026.25.103",
+        resumo: "Simuladores de instalação do Windows 11 e de formatação e partições, pendrive bootável, sistemas de arquivos e diagnóstico de boot.",
+      },
+      {
         href: "/curso-informatica-essencial-aula-5",
         titulo: "Aula 5. Instalar e desinstalar softwares",
         turma: "Lajeado 2026.25.60",

@@ -1,0 +1,37 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Disco e partições</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"Disco e partições"});const C=V.C,tl=V.tl;
+const R=(p,x,y,w,h,f,s,rx)=>V.el("rect",{x:x,y:y,width:w,height:h,rx:rx||10,fill:f,stroke:s||"#0b1626","stroke-width":3},p);
+const SH=(g,t)=>{gsap.set(g,{opacity:0});V.tl.to(g,{opacity:1,duration:.4},t);};
+const HD=(g,t)=>V.tl.to(g,{opacity:0,duration:.4},t);
+const T=(p,s,x,y,o)=>V.text(p,s,x,y,o);
+
+const A=V.g(V.s,0,0),t0=0.4;V.scene(A,t0,46);
+V.title("Partições do disco","O que excluir, o que o instalador cria",t0,4);
+const segs=[["EFI",.06,C.cinza],["MSR",.03,C.roxo],["C: Windows antigo",.4,C.azul],["D: Dados",.4,C.verde],["Rec.",.11,C.cinza]];
+const X0=100,W=1080,Y=250,H=90;
+const grp=V.g(A,0,0);let x=X0;const rs=[];
+segs.forEach((s,i)=>{const w=W*s[1];const g=V.g(grp,x,Y);const r=R(g,0,0,w,H,s[2],"#0b1626",6);const tx=T(g,s[0],w/2,H/2+7,{s:w>200?25:17,w:700});rs.push({g,r,tx,w,x});x+=w;});
+SH(grp,t0+2.5);
+const lbl=T(A,"Disco 0. SSD do computador",X0,230,{a:"start",s:24,w:700,c:C.azulC});SH(lbl,t0+2.5);
+V.cap("Este é o SSD do cliente, dividido em partições. Antes de mexer, o backup precisa estar feito.",t0+2.8,6.4);
+/* HD backup */
+const hd=V.g(A,1050,430);R(hd,-130,-40,260,80,C.verde);T(hd,"HD externo",0,-4,{s:24,w:800});T(hd,"backup feito",0,24,{s:20});SH(hd,t0+9.5);
+V.cap("Backup no HD externo. Só depois de conferir o backup é seguro excluir partições.",t0+9.7,6);
+/* excluir C e D */
+[2,3].forEach((i,k)=>{const q=rs[i];V.tl.to(q.r,{attr:{fill:"#3b4a60"},duration:.6},t0+17+k*1.2);V.tl.to(q.tx,{opacity:0,duration:.3},t0+17+k*1.2);});
+const nl=T(A,"Espaço não alocado",X0+W*(0.09+0.4),Y+H/2+7,{s:27,w:800,c:C.claro});gsap.set(nl,{opacity:0});V.tl.to(nl,{opacity:1,duration:.5},t0+19.5);
+V.cap("Excluir C: e D: apaga o que havia nelas. O espaço vira Não alocado, sem formato nenhum.",t0+17,6.4);
+const warn=V.g(A,500,430);T(warn,"Excluir apaga os arquivos",0,0,{s:30,w:800,c:C.verm});SH(warn,t0+17.5);HD(warn,t0+23);
+/* instalador cria */
+const novo=[["EFI 100 MB",0.07,C.amarelo],["MSR 16 MB",0.03,C.roxo],["C: NTFS",0.8,C.azul],["Rec. 1 GB",0.1,C.cinza]];
+const nx=X0;const nw=W;let xx=nx;const ng=V.g(A,0,0);
+V.tl.to(nl,{opacity:0,duration:.4},t0+25);V.tl.to(grp,{opacity:0,duration:.4},t0+25.2);
+const parts=[["EFI",.06,C.amarelo],["MSR",.03,C.roxo],["C: Windows 11 (NTFS)",.79,C.azul],["Rec.",.12,C.cinza]];
+parts.forEach((p,i)=>{const w=nw*p[1];const g=V.g(ng,xx,Y);R(g,0,0,w,H,p[2],"#0b1626",6);T(g,p[0],w/2,H/2+7,{s:w>200?24:16,w:700,c:p[2]===C.amarelo?"#0b1626":"#fff"});xx+=w;});
+SH(ng,t0+25.5);
+V.cap("Ao escolher o espaço não alocado e clicar em Avançar, o instalador cria sozinho as partições do Windows.",t0+25.3,7);
+const nt=V.g(A,0,0);T(nt,"EFI: arquivos de boot em FAT32",100,420,{a:"start",s:25,w:700,c:C.amarelo});T(nt,"C: sistema e programas em NTFS",100,458,{a:"start",s:25,w:700,c:C.azulC});T(nt,"Recuperação: reparo do Windows",100,496,{a:"start",s:25,w:700,c:C.cinzaC});SH(nt,t0+31);
+V.cap("Mínimo para o Windows 11: 64 GB. Confira sempre qual é o disco certo antes de excluir.",t0+34,6.6);
+V.finish();
+</script></body></html>

@@ -1,0 +1,39 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Criando o pendrive de instalação</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"Criando o pendrive de instalação"});const C=V.C,tl=V.tl;
+const R=(p,x,y,w,h,f,s,rx)=>V.el("rect",{x:x,y:y,width:w,height:h,rx:rx||10,fill:f,stroke:s||"#0b1626","stroke-width":3},p);
+const SH=(g,t)=>{gsap.set(g,{opacity:0});V.tl.to(g,{opacity:1,duration:.4},t);};
+const HD=(g,t)=>V.tl.to(g,{opacity:0,duration:.4},t);
+const T=(p,s,x,y,o)=>V.text(p,s,x,y,o);
+
+const A=V.g(V.s,0,0),t0=0.4;V.scene(A,t0,44);
+V.title("Pendrive de instalação","Do download ao teste",t0,4);
+/* pendrive */
+const pen=V.g(A,330,380);R(pen,-90,-36,180,72,C.cinza);R(pen,-120,-18,34,36,C.cinzaC);T(pen,"Pendrive 16 GB",0,6,{s:21,w:700});
+const fl=V.g(A,330,470);["fotos.zip","aulas.docx"].forEach((n,i)=>{const c=V.chip(fl,n,i*0-0,i*40,{c:C.azulE});});
+SH(pen,t0+3);SH(fl,t0+3.4);
+V.cap("Primeiro, um pendrive de 8 GB ou mais. Os arquivos que estão nele serão apagados.",t0+3.2,6);
+/* site */
+const site=V.g(A,900,300);R(site,-190,-110,380,220,C.azulE,C.azulC);T(site,"microsoft.com",0,-60,{s:26,w:800});T(site,"Ferramenta de criação",0,-18,{s:22});T(site,"de mídia do Windows 11",0,12,{s:22});
+R(site,-90,45,180,42,C.laranja);T(site,"Baixar agora",0,74,{s:22,w:800});
+SH(site,t0+10);
+V.cap("Baixe a ferramenta só do site oficial da Microsoft. Outros sites podem trazer vírus.",t0+10.2,6.2);
+/* ferramenta se move para o centro */
+const tool=V.g(A,640,200);R(tool,-130,-45,260,90,C.verde);T(tool,"Ferramenta aberta",0,-4,{s:23,w:800});T(tool,"idioma e edição",0,24,{s:19});
+SH(tool,t0+17);V.tl.fromTo(tool,{y:200},{y:200},t0+17);
+V.cap("Abra a ferramenta e escolha idioma e edição. Depois marque a opção Unidade flash USB.",t0+17.2,6);
+/* gravação */
+const bar=V.g(A,640,540);R(bar,-300,-16,600,32,"#0d2744",C.azulC);const fill=V.el("rect",{x:-296,y:-12,width:0,height:24,rx:6,fill:C.amarelo},bar);SH(bar,t0+24);
+V.tl.to(fill,{attr:{width:592},duration:5,ease:"none"},t0+24.5);
+V.tl.to(fl,{opacity:0,duration:.6},t0+26);
+const lab=T(pen,"Windows 11",0,6,{s:22,w:800});gsap.set(lab,{opacity:0});
+V.tl.to(pen.firstChild,{attr:{fill:C.azul},duration:.6},t0+29);
+V.tl.to(pen.children[2],{opacity:0,duration:.3},t0+29);V.tl.to(lab,{opacity:1,duration:.4},t0+29.3);
+V.cap("A ferramenta grava a imagem do Windows e apaga o que havia no pendrive. Espere terminar.",t0+24.4,6);
+/* teste */
+V.tl.to([site,tool],{opacity:0,duration:.5},t0+23);
+const pc=V.pc(A,"Outro computador",930,330,{c:C.cinza});SH(pc,t0+32);
+const ok=V.g(A,1010,290);V.el("path",{d:"M-30 0L-10 22L32 -26",stroke:C.verde,"stroke-width":12,fill:"none","stroke-linecap":"round","stroke-linejoin":"round"},ok);SH(ok,t0+37);
+V.cap("Teste iniciando um computador pelo pendrive. Se aparecer a tela de instalação, ficou pronto.",t0+32.2,6.4);
+V.finish();
+</script></body></html>

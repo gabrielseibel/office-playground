@@ -1,0 +1,25 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sistemas de arquivos</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"Sistemas de arquivos"});const C=V.C,tl=V.tl;
+const R=(p,x,y,w,h,f,s,rx)=>V.el("rect",{x:x,y:y,width:w,height:h,rx:rx||10,fill:f,stroke:s||"#0b1626","stroke-width":3},p);
+const SH=(g,t)=>{gsap.set(g,{opacity:0});V.tl.to(g,{opacity:1,duration:.4},t);};
+const HD=(g,t)=>V.tl.to(g,{opacity:0,duration:.4},t);
+const T=(p,s,x,y,o)=>V.text(p,s,x,y,o);
+
+const A=V.g(V.s,0,0),t0=0.4;V.scene(A,t0,44);
+V.title("Sistema de arquivos","Cada formato tem o seu uso",t0,4);
+const fsx=[["NTFS","Disco C: do Windows",C.azul],["FAT32","EFI e pendrive pequeno",C.laranja],["exFAT","Pendrive e cartão grande",C.verde],["ext4","Linux",C.roxo]];
+const cs=fsx.map((f,i)=>{const g=V.g(A,175+i*310,220);R(g,-135,-60,270,120,f[2]);T(g,f[0],0,-8,{s:36,w:800});T(g,f[1],0,30,{s:19,w:600});SH(g,t0+3+i*1.2);return g;});
+V.cap("Quatro formatos que você vai encontrar: NTFS no Windows, FAT32, exFAT nos pendrives e ext4 no Linux.",t0+3,8);
+/* demo FAT32 4GB */
+const big=V.g(A,170,470);R(big,-95,-30,190,60,C.amarelo);T(big,"video.mp4 6 GB",0,8,{s:22,w:800,c:"#0b1626"});SH(big,t0+12);
+V.cap("Um vídeo de 6 GB tenta entrar em um pendrive formatado em FAT32.",t0+12.2,5.4);
+V.tl.to(big,{x:485,y:330,duration:1.2,ease:"power2.inOut"},t0+17);
+const no=V.cross(A,485,290,30);gsap.set(no,{opacity:0});V.tl.to(no,{opacity:1,duration:.3},t0+18.4);V.tl.to(no,{opacity:0,duration:.3},t0+23);
+V.cap("Não entra. O FAT32 aceita arquivos de no máximo 4 GB.",t0+18.2,5);
+V.tl.to(big,{x:795,y:330,duration:1.2,ease:"power2.inOut"},t0+24);
+const ok=V.g(A,795,285);V.el("path",{d:"M-30 0L-10 22L32 -26",stroke:C.verde,"stroke-width":12,fill:"none","stroke-linecap":"round","stroke-linejoin":"round"},ok);SH(ok,t0+25.5);
+V.cap("No exFAT entra sem problema, e ele funciona no Windows e no Mac.",t0+25.4,5.6);
+V.cap("Regra rápida: Windows em NTFS, EFI em FAT32, pendrive grande em exFAT, Linux em ext4.",t0+32,7);
+V.finish();
+</script></body></html>

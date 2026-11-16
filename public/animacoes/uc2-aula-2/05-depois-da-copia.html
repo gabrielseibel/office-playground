@@ -1,0 +1,24 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Depois da cópia dos arquivos</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"Depois da cópia dos arquivos"});const C=V.C,tl=V.tl;
+const R=(p,x,y,w,h,f,s,rx)=>V.el("rect",{x:x,y:y,width:w,height:h,rx:rx||10,fill:f,stroke:s||"#0b1626","stroke-width":3},p);
+const SH=(g,t)=>{gsap.set(g,{opacity:0});V.tl.to(g,{opacity:1,duration:.4},t);};
+const HD=(g,t)=>V.tl.to(g,{opacity:0,duration:.4},t);
+const T=(p,s,x,y,o)=>V.text(p,s,x,y,o);
+
+const A=V.g(V.s,0,0),t0=0.4;V.scene(A,t0,46);
+V.title("Do instalador ao primeiro uso","O momento de não apertar tecla",t0,4);
+const E=[["Copia","arquivos",C.azul],["Reinicia","sozinho",C.roxo],["Instala","recursos",C.azul],["Reinicia","de novo",C.roxo],["Primeiro","uso",C.verde]];
+E.forEach((x,i)=>{const g=V.g(A,0,0);R(g,40+i*236,180,208,120,x[2]);T(g,x[0],144+i*236,226,{s:26,w:800});T(g,x[1],144+i*236,262,{s:22,w:600});SH(g,t0+3+i*1.2);});
+V.cap("Depois de escolher o disco, o instalador copia os arquivos e reinicia o computador sozinho.",t0+3,6.2);
+const msg=V.g(A,0,0);R(msg,170,380,940,100,"#000","#555",8);T(msg,"Press any key to boot from CD or DVD...",640,442,{s:30,w:700,c:"#ddd",f:'"Consolas","Liberation Mono",monospace'});SH(msg,t0+11);
+V.cap("Na reinicialização, aparece esta mensagem por alguns segundos. É um teste para quem queria iniciar pelo pendrive de novo.",t0+11.2,8);
+const key=V.g(A,640,535);R(key,-60,-24,120,48,C.cinzaC);T(key,"tecla",0,8,{s:26,w:800,c:"#0b1626"});SH(key,t0+19.5);
+const no=V.cross(A,640,535,34);gsap.set(no,{opacity:0});V.tl.to(no,{opacity:1,duration:.3},t0+21);
+V.cap("Não aperte nada. Apertar leva de volta ao pendrive e a instalação recomeça.",t0+20,6.4);
+V.tl.to(msg,{opacity:0,duration:.4},t0+27);V.tl.to(key,{opacity:0,duration:.4},t0+27);V.tl.to(no,{opacity:0,duration:.4},t0+27);
+const ok=V.g(A,640,430);T(ok,"Sem tecla: o computador segue pelo disco.",0,0,{s:32,w:800,c:C.verde});SH(ok,t0+27.6);
+V.cap("Sem apertar nada, o computador inicia pelo disco e continua a instalação até o primeiro uso.",t0+27.8,6.6);
+V.cap("No primeiro uso: região, teclado ABNT2, rede, usuário. Com internet, a licença digital ativa sozinha.",t0+35,7.4);
+V.finish();
+</script></body></html>

@@ -1,0 +1,30 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>A ordem de boot</title>
+<link rel="stylesheet" href="_base.css"><script src="vendor/gsap.min.js"></script><script src="_base.js"></script><script src="_extra.js"></script></head><body><script>
+V.init({title:"A ordem de boot"});const C=V.C,tl=V.tl;
+const R=(p,x,y,w,h,f,s,rx)=>V.el("rect",{x:x,y:y,width:w,height:h,rx:rx||10,fill:f,stroke:s||"#0b1626","stroke-width":3},p);
+const SH=(g,t)=>{gsap.set(g,{opacity:0});V.tl.to(g,{opacity:1,duration:.4},t);};
+const HD=(g,t)=>V.tl.to(g,{opacity:0,duration:.4},t);
+const T=(p,s,x,y,o)=>V.text(p,s,x,y,o);
+
+const A=V.g(V.s,0,0),t0=0.4;V.scene(A,t0,44);
+V.title("Quem liga primeiro?","A ordem de boot decide",t0,4);
+const names=[["SSD com Windows",C.azul],["Pendrive de instalação",C.laranja],["Rede",C.cinza]];
+const slotY=[190,290,390];
+const cards=names.map((n,i)=>{const g=V.g(A,520,slotY[i]);R(g,-230,-38,460,76,n[1]);T(g,n[0],0,8,{s:26,w:800});const num=T(g,String(i+1)+".",-262,10,{s:28,w:800});return g;});
+cards.forEach((g,i)=>SH(g,t0+3+i*.5));
+const fw=V.g(A,1020,300);R(fw,-110,-60,220,120,C.roxo);T(fw,"Firmware",0,-4,{s:27,w:800});T(fw,"(UEFI)",0,28,{s:22});SH(fw,t0+3);
+V.cap("O firmware procura um sistema de cima para baixo na lista, e usa o primeiro que achar.",t0+3.2,6);
+const dot=V.dot(A,900,300,{r:15});gsap.set(dot,{opacity:0});
+V.tl.set(dot,{opacity:1,x:900,y:300},t0+10).to(dot,{x:760,y:190,duration:.8},t0+10);
+const okW=V.g(A,520,150);T(okW,"Achou o Windows. Liga o Windows antigo.",0,0,{s:25,w:700,c:C.verde});SH(okW,t0+11.2);HD(okW,t0+16.5);
+V.cap("Com o SSD em primeiro, o computador liga o Windows de sempre e ignora o pendrive.",t0+11,5.6);
+/* troca */
+V.tl.to(cards[1],{y:190,duration:.9,ease:"power2.inOut"},t0+18);V.tl.to(cards[0],{y:290,duration:.9,ease:"power2.inOut"},t0+18);
+V.cap("Para instalar, o pendrive precisa ficar em primeiro. Use F12 no início, ou mude a ordem na UEFI.",t0+18,6.4);
+const key=V.g(A,1020,470);R(key,-45,-30,90,60,C.amarelo);T(key,"F12",0,9,{s:30,w:800,c:"#0b1626"});SH(key,t0+19);
+V.tl.set(dot,{x:900,y:300},t0+25).to(dot,{x:760,y:190,duration:.8},t0+25);
+const okP=V.g(A,520,120);T(okP,"Achou o instalador. Abre a instalação do Windows.",0,0,{s:25,w:700,c:C.verde});SH(okP,t0+26.2);
+V.cap("Agora o firmware acha o instalador no pendrive e abre a tela de instalação.",t0+26,5.6);
+V.cap("Depois de instalar, tire o pendrive ou devolva o SSD para o primeiro lugar.",t0+33,6);
+V.finish();
+</script></body></html>
