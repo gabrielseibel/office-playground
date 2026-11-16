@@ -39,12 +39,12 @@ import {
   PEN_PERG,
   PARTS_AUTO,
   MITOS_A3,
-  PASSOS_INSTALADOR,
   VIDEOS_A3,
   CHECK_FISCAL,
   GPT_MBR,
   MISSOES_BIOS,
 } from "@/data/cursoInfoEssencialUC2Aula2";
+import { SimInstalacao, SimParticoes } from "@/features/curso/simuladores/SimWindows";
 
 
 function embaralhar<T>(lista: T[]): T[] {
@@ -211,596 +211,6 @@ function Quiz({ itens, categoria, instrucao }: { itens: ItemQuiz[]; categoria: s
     </div>
   );
 }
-/* ---------- Simulador de disco (formatação e partições) ---------- */
-type Cenario = "A" | "B";
-type Item = { id: string; kind: "part" | "livre"; nome: string; tam: number; fs?: string; dados: boolean; formatado: boolean };
-type Disco = { id: 0 | 1; rotulo: string; itens: Item[] };
-
-const fmtTam = (gb: number) => (gb < 1 ? `${Math.round(gb * 1000)} MB` : `${gb.toFixed(1).replace(".", ",")} GB`);
-
-function discosIniciais(c: Cenario): Disco[] {
-  const d0: Disco = {
-    id: 0,
-    rotulo: "Disco 0. SSD 238,5 GB (computador do cliente)",
-    itens: [
-      { id: "efi", kind: "part", nome: "Sistema", tam: 0.1, fs: "FAT32", dados: false, formatado: true },
-      { id: "msr", kind: "part", nome: "Reservado", tam: 0.016, fs: "", dados: false, formatado: true },
-      { id: "win", kind: "part", nome: "Windows antigo (C:)", tam: 120, fs: "NTFS", dados: true, formatado: false },
-      { id: "dat", kind: "part", nome: c === "B" ? "Fotos e contratos do cliente (D:)" : "Dados antigos (D:)", tam: 117.78, fs: "NTFS", dados: true, formatado: false },
-      { id: "rec", kind: "part", nome: "Recuperação", tam: 0.6, fs: "NTFS", dados: false, formatado: true },
-    ],
-  };
-  if (c === "B") return [d0];
-  const d1: Disco = {
-    id: 1,
-    rotulo: "Disco 1. HD externo 931,5 GB (backup do cliente)",
-    itens: [{ id: "bk", kind: "part", nome: "Backup do cliente (E:)", tam: 931.5, fs: "NTFS", dados: true, formatado: false }],
-  };
-  return [d0, d1];
-}
-
-function juntarLivres(itens: Item[]): Item[] {
-  const out: Item[] = [];
-  for (const it of itens) {
-    const ult = out[out.length - 1];
-    if (it.kind === "livre" && ult && ult.kind === "livre") ult.tam += it.tam;
-    else out.push({ ...it });
-  }
-  return out;
-}
-
-type Msg = { tipo: "erro" | "ok" | "info"; texto: string } | null;
-type Resultado = { tipo: "ok" | "cancelou" | "perdeu"; texto: string } | null;
-
-function DiscoSim({
-  cenario,
-  onFim,
-  categoria,
-}: {
-  cenario: Cenario;
-  onFim?: (r: { tipo: "ok" | "cancelou" | "perdeu"; erros: number }) => void;
-  categoria: string;
-}) {
-  const [discos, setDiscos] = React.useState<Disco[]>(() => discosIniciais(cenario));
-  const [sel, setSel] = React.useState<string | null>(null);
-  const [msg, setMsg] = React.useState<Msg>(null);
-  const [erros, setErros] = React.useState(0);
-  const [res, setRes] = React.useState<Resultado>(null);
-  const [tamNovo, setTamNovo] = React.useState("100");
-
-  React.useEffect(() => {
-    setDiscos(discosIniciais(cenario));
-    setSel(null);
-    setMsg(null);
-    setErros(0);
-    setRes(null);
-  }, [cenario]);
-
-  const achar = (id: string | null): { d: Disco; it: Item } | null => {
-    if (!id) return null;
-    for (const d of discos) {
-      const it = d.itens.find((i) => i.id === id);
-      if (it) return { d, it };
-    }
-    return null;
-  };
-  const atual = achar(sel);
-
-  function falhar(texto: string) {
-    setErros((e) => e + 1);
-    setMsg({ tipo: "erro", texto });
-    recordAnswer({ app: "info", category: categoria, correct: false, timeMs: 0, points: 0 });
-  }
-  function acertar(texto: string) {
-    setMsg({ tipo: "ok", texto });
-    recordAnswer({ app: "info", category: categoria, correct: true, timeMs: 0, points: 10 });
-  }
-  function terminar(r: NonNullable<Resultado>) {
-    setRes(r);
-    onFim?.({ tipo: r.tipo, erros });
-  }
-  function reiniciar() {
-    setDiscos(discosIniciais(cenario));
-    setSel(null);
-    setMsg(null);
-    setErros(0);
-    setRes(null);
-  }
-
-  function excluir() {
-    if (!atual) return setMsg({ tipo: "info", texto: "Clique em uma partição da lista antes." });
-    const { d, it } = atual;
-    if (it.kind === "livre") return setMsg({ tipo: "info", texto: "Espaço não alocado não tem o que excluir." });
-    if (d.id === 1) {
-      setErros((e) => e + 1);
-      return terminar({ tipo: "perdeu", texto: "Você excluiu a partição do backup. O backup do cliente foi apagado e não volta mais. Antes de excluir, confira em qual disco você está." });
-    }
-    if (cenario === "B" && it.dados) {
-      setErros((e) => e + 1);
-      return terminar({ tipo: "perdeu", texto: "Essa partição guardava arquivos do cliente e não existe backup. Excluir apaga tudo e não volta. O certo era cancelar a instalação e fazer o backup antes." });
-    }
-    setDiscos((ds) =>
-      ds.map((x) => (x.id !== d.id ? x : { ...x, itens: juntarLivres(x.itens.map((i) => (i.id === it.id ? { ...i, kind: "livre" as const, nome: "Espaço não alocado", fs: undefined, dados: false, formatado: false } : i))) }))
-    );
-    setSel(null);
-    acertar("Partição excluída. O espaço virou não alocado.");
-  }
-
-  function novo() {
-    if (!atual || atual.it.kind !== "livre") return setMsg({ tipo: "info", texto: "Para criar uma partição, clique antes em Espaço não alocado." });
-    const { d, it } = atual;
-    if (d.id === 1) return falhar("Esse disco guarda o backup. Não mexa nele.");
-    const t = parseFloat(tamNovo.replace(",", "."));
-    if (!t || t <= 0) return setMsg({ tipo: "info", texto: "Digite o tamanho em GB." });
-    if (t > it.tam + 0.001) return setMsg({ tipo: "erro", texto: `Só existem ${fmtTam(it.tam)} livres aqui.` });
-    const novoItem: Item = { id: "n" + Date.now(), kind: "part", nome: "Nova partição", tam: t, fs: "NTFS", dados: false, formatado: false };
-    const resto = it.tam - t;
-    setDiscos((ds) =>
-      ds.map((x) =>
-        x.id !== d.id
-          ? x
-          : {
-              ...x,
-              itens: x.itens.flatMap((i) => (i.id !== it.id ? [i] : resto > 0.05 ? [novoItem, { ...it, tam: resto }] : [novoItem])),
-            }
-      )
-    );
-    setSel(novoItem.id);
-    setMsg({ tipo: "ok", texto: `Partição de ${fmtTam(t)} criada.` });
-  }
-
-  function formatar() {
-    if (!atual || atual.it.kind !== "part") return setMsg({ tipo: "info", texto: "Clique em uma partição para formatar." });
-    const { d, it } = atual;
-    if (d.id === 1) {
-      setErros((e) => e + 1);
-      return terminar({ tipo: "perdeu", texto: "Você formatou o disco do backup. Formatar apaga tudo. Antes de formatar, confira o disco." });
-    }
-    if (cenario === "B" && it.dados) {
-      setErros((e) => e + 1);
-      return terminar({ tipo: "perdeu", texto: "Formatar apaga tudo da partição e o cliente não tem backup. O certo era cancelar e fazer o backup primeiro." });
-    }
-    setDiscos((ds) => ds.map((x) => (x.id !== d.id ? x : { ...x, itens: x.itens.map((i) => (i.id === it.id ? { ...i, formatado: true, dados: false, fs: "NTFS" } : i)) })));
-    acertar("Formatada em NTFS. A partição está limpa.");
-  }
-
-  function avancar() {
-    if (!atual) return setMsg({ tipo: "info", texto: "Escolha onde instalar o Windows." });
-    const { d, it } = atual;
-    if (d.id === 1) return falhar("Esse é o disco do backup. O Windows vai no SSD do computador.");
-    if (it.kind === "part" && it.tam < 64) return falhar(`Essa partição tem ${fmtTam(it.tam)}. O Windows 11 pede 64 GB ou mais.`);
-    if (it.kind === "livre" && it.tam < 64) return falhar(`Só ${fmtTam(it.tam)} livres. O Windows 11 pede 64 GB ou mais.`);
-    if (it.kind === "part" && it.dados && !it.formatado) return falhar("Essa partição ainda tem o Windows ou os arquivos antigos. Exclua ou formate antes, para a instalação ficar limpa.");
-    terminar({ tipo: "ok", texto: it.kind === "livre" ? "O instalador cria as partições do sistema sozinho no espaço não alocado e instala o Windows." : "O Windows será instalado na partição limpa." });
-  }
-
-  function cancelar() {
-    if (cenario === "B") terminar({ tipo: "cancelou", texto: "Boa decisão. Sem backup, nada de excluir. Cancele, volte ao Windows antigo, copie as fotos e contratos para o HD externo e só depois recomece." });
-    else falhar("O backup já está no HD externo, então não precisa cancelar. Continue e escolha onde instalar.");
-  }
-
-  if (res) {
-    const bom = res.tipo !== "perdeu";
-    return (
-      <div className={cn("rounded-2xl border p-5", bom ? "border-emerald-500 bg-emerald-500/10" : "border-red-500 bg-red-500/10")}>
-        <p className="flex items-center gap-2 text-lg font-bold">
-          {bom ? <Check className="h-5 w-5 text-emerald-600" /> : <X className="h-5 w-5 text-red-600" />}
-          {res.tipo === "ok" ? "Disco pronto" : res.tipo === "cancelou" ? "Cancelou na hora certa" : "Dados perdidos"}
-        </p>
-        <p className="mt-2 text-sm md:text-base">{res.texto}</p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {erros} {erros === 1 ? "erro" : "erros"} nesta tentativa.
-        </p>
-        <div className="mt-4">
-          <BotaoSec onClick={reiniciar}>
-            <RotateCcw className="h-4 w-4" /> tentar de novo
-          </BotaoSec>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <div className="overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 text-white shadow-soft-lg">
-        <div className="border-b border-slate-700 bg-slate-800 px-4 py-2 text-sm font-semibold">Instalação do Windows 11. Onde você deseja instalar o Windows?</div>
-        <div className="space-y-4 p-4">
-          {discos.map((d) => {
-            const total = d.itens.reduce((s, i) => s + i.tam, 0);
-            return (
-              <div key={d.id}>
-                <p className="mb-2 text-xs font-semibold text-slate-300">{d.rotulo}</p>
-                <div className="mb-2 flex h-7 overflow-hidden rounded-md border border-slate-600">
-                  {d.itens.map((i) => (
-                    <div
-                      key={i.id}
-                      title={i.nome}
-                      onClick={() => setSel(i.id)}
-                      className={cn("cursor-pointer border-r border-slate-900 transition", i.kind === "livre" ? "bg-slate-600" : i.dados ? "bg-blue-500" : "bg-sky-300", sel === i.id && "ring-2 ring-inset ring-amber-300")}
-                      style={{ width: `${Math.max((i.tam / total) * 100, 2.5)}%` }}
-                    />
-                  ))}
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[520px] text-left text-xs md:text-sm">
-                    <thead className="text-slate-400">
-                      <tr>
-                        <th className="py-1 pr-2 font-medium">Nome</th>
-                        <th className="py-1 pr-2 font-medium">Tamanho</th>
-                        <th className="py-1 pr-2 font-medium">Sistema de arquivos</th>
-                        <th className="py-1 font-medium">Situação</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {d.itens.map((i) => (
-                        <tr key={i.id} onClick={() => setSel(i.id)} className={cn("cursor-pointer border-t border-slate-700 hover:bg-slate-800", sel === i.id && "bg-blue-700/60 hover:bg-blue-700/60")}>
-                          <td className="py-1.5 pr-2">{i.nome}</td>
-                          <td className="py-1.5 pr-2">{fmtTam(i.tam)}</td>
-                          <td className="py-1.5 pr-2">{i.kind === "livre" ? "" : i.fs || "Sem sistema"}</td>
-                          <td className="py-1.5">{i.kind === "livre" ? "Não alocado" : i.formatado ? "Limpa" : i.dados ? "Tem arquivos" : "Sistema"}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <div className="flex flex-wrap items-center gap-2 border-t border-slate-700 bg-slate-800 px-4 py-3">
-          <button onClick={excluir} className="rounded-lg bg-slate-700 px-3 py-1.5 text-sm hover:bg-slate-600">Excluir</button>
-          <button onClick={formatar} className="rounded-lg bg-slate-700 px-3 py-1.5 text-sm hover:bg-slate-600">Formatar</button>
-          <span className="flex items-center gap-1">
-            <input value={tamNovo} onChange={(e) => setTamNovo(e.target.value)} inputMode="decimal" aria-label="Tamanho em GB" className="w-16 rounded-lg border border-slate-600 bg-slate-900 px-2 py-1.5 text-sm" />
-            <span className="text-xs text-slate-300">GB</span>
-            <button onClick={novo} className="rounded-lg bg-slate-700 px-3 py-1.5 text-sm hover:bg-slate-600">Novo</button>
-          </span>
-          <span className="ml-auto flex gap-2">
-            <button onClick={cancelar} className="rounded-lg border border-slate-500 px-3 py-1.5 text-sm hover:bg-slate-700">Cancelar instalação</button>
-            <button onClick={avancar} className="rounded-lg bg-blue-600 px-4 py-1.5 text-sm font-semibold hover:bg-blue-500">Avançar</button>
-          </span>
-        </div>
-      </div>
-      <div className="mt-3 min-h-[3rem]">
-        {msg && (
-          <p className={cn("rounded-xl border p-3 text-sm", msg.tipo === "erro" && "border-red-500 bg-red-500/10", msg.tipo === "ok" && "border-emerald-500 bg-emerald-500/10", msg.tipo === "info" && "border-blue-500/40 bg-blue-500/5")}>{msg.texto}</p>
-        )}
-      </div>
-      <p className="mt-1 text-xs text-muted-foreground">Erros nesta tentativa: {erros}. Barra azul escura: partição com arquivos. Azul claro: partição de sistema ou limpa. Cinza: espaço não alocado.</p>
-    </div>
-  );
-}
-
-function SeletorCenario({ valor, onChange }: { valor: Cenario | null; onChange: (c: Cenario) => void }) {
-  const opts: { id: Cenario; titulo: string; texto: string }[] = [
-    { id: "A", titulo: "Cenário A. Backup feito", texto: "O cliente já copiou tudo para o HD externo (Disco 1). Faça a instalação limpa no SSD." },
-    { id: "B", titulo: "Cenário B. Sem backup", texto: "Fotos e contratos estão só no SSD (D:). Ninguém fez cópia. Decida o que fazer." },
-  ];
-  return (
-    <div className="mb-4 grid gap-2 sm:grid-cols-2">
-      {opts.map((o) => (
-        <button key={o.id} onClick={() => onChange(o.id)} className={cn("rounded-2xl border px-4 py-3 text-left transition", valor === o.id ? "border-blue-500 bg-blue-600 text-white" : "border-foreground/10 bg-white/60 hover:bg-white dark:bg-white/5 dark:hover:bg-white/10")}>
-          <span className="block text-sm font-semibold">{o.titulo}</span>
-          <span className={cn("block text-xs", valor === o.id ? "text-blue-100" : "text-muted-foreground")}>{o.texto}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function SimuladorFormatacao() {
-  const [cen, setCen] = React.useState<Cenario>("A");
-  return (
-    <div>
-      <Instrucao>
-        Em dupla. Leiam o cenário, combinem o plano e só então cliquem. Excluir e formatar apagam tudo, então confiram sempre o disco e se existe backup. O Windows 11 precisa de 64 GB ou mais.
-      </Instrucao>
-      <SeletorCenario valor={cen} onChange={setCen} />
-      <DiscoSim cenario={cen} categoria="uc2a3-formatacao" />
-      <details className="mt-5 rounded-2xl border border-foreground/10 bg-white/40 p-4 text-sm dark:bg-white/5">
-        <summary className="cursor-pointer font-semibold">O que o instalador cria sozinho no espaço não alocado</summary>
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full min-w-[480px] text-left">
-            <thead className="text-muted-foreground">
-              <tr><th className="py-1 pr-3 font-medium">Partição</th><th className="py-1 pr-3 font-medium">Tamanho</th><th className="py-1 pr-3 font-medium">Formato</th><th className="py-1 font-medium">Para quê</th></tr>
-            </thead>
-            <tbody>
-              {PARTS_AUTO.map((p) => (
-                <tr key={p.nome} className="border-t border-foreground/10"><td className="py-1.5 pr-3">{p.nome}</td><td className="py-1.5 pr-3">{p.tamanho}</td><td className="py-1.5 pr-3">{p.fs}</td><td className="py-1.5">{p.paraque}</td></tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </details>
-    </div>
-  );
-}
-
-/* ---------- Simulador de instalação do Windows 11 ---------- */
-type Op = { r: string; ok?: boolean; dica?: string; boa?: string };
-type PassoEscolha = { tipo: "escolha"; fase: number; titulo: string; texto?: string; estilo: "boot" | "win"; opcoes: Op[] };
-type PassoEspecial = { tipo: "disco" | "copia"; fase: number };
-type Passo = PassoEscolha | PassoEspecial;
-
-const PASSOS: Passo[] = [
-  {
-    tipo: "escolha", fase: 0, estilo: "boot", titulo: "Menu de boot (F12)",
-    texto: "Você ligou o notebook com o pendrive de instalação no USB e apertou F12. Qual dispositivo escolher?",
-    opcoes: [
-      { r: "UEFI: Pendrive USB (Windows 11)", ok: true, boa: "Certo. O computador vai iniciar pelo pendrive." },
-      { r: "Windows Boot Manager (SSD)", dica: "Esse é o Windows antigo. O computador ligaria como sempre, sem abrir o instalador." },
-      { r: "Rede PXE IPv4", dica: "Boot pela rede serve para empresas com servidor de instalação. Aqui o instalador está no pendrive." },
-      { r: "Configuração da UEFI", dica: "Entrar na configuração ajuda a mudar a ordem de boot, mas o menu de boot já resolve direto." },
-    ],
-  },
-  {
-    tipo: "escolha", fase: 1, estilo: "win", titulo: "Idioma a instalar", texto: "Instalação do Windows 11. O cliente é de Xanxerê.",
-    opcoes: [
-      { r: "Português (Brasil)", ok: true },
-      { r: "English (United States)", dica: "O sistema ficaria em inglês. O cliente fala português." },
-      { r: "Español (España)", dica: "O cliente fala português do Brasil." },
-    ],
-  },
-  {
-    tipo: "escolha", fase: 1, estilo: "win", titulo: "Formato de hora e moeda", texto: "O cliente emite nota em reais.",
-    opcoes: [
-      { r: "Português (Brasil)", ok: true },
-      { r: "Inglês (Estados Unidos)", dica: "Isso muda data, hora e moeda. O Real ficaria fora do padrão." },
-    ],
-  },
-  {
-    tipo: "escolha", fase: 1, estilo: "win", titulo: "Método de entrada de teclado", texto: "O teclado do notebook tem a tecla do ç.",
-    opcoes: [
-      { r: "Português (Brasil ABNT2)", ok: true },
-      { r: "Inglês (Estados Unidos)", dica: "Com esse teclado as teclas ç, acentos e a barra ficam trocadas." },
-      { r: "Português (Portugal)", dica: "O layout de Portugal é outro. O brasileiro é o ABNT2." },
-    ],
-  },
-  {
-    tipo: "escolha", fase: 2, estilo: "win", titulo: "Windows 11", texto: "A tela mostra um botão grande no meio e um link pequeno no canto.",
-    opcoes: [
-      { r: "Instalar agora", ok: true },
-      { r: "Reparar o computador", dica: "Esse link abre ferramentas de recuperação. Aqui a ideia é instalar do zero." },
-    ],
-  },
-  {
-    tipo: "escolha", fase: 3, estilo: "win", titulo: "Ativar o Windows", texto: "O notebook já teve o Windows 11 Pro ativado antes e tem licença digital.",
-    opcoes: [
-      { r: "Não tenho a chave do produto", ok: true, boa: "Certo. Com internet, a licença digital costuma ativar sozinha depois." },
-      { r: "Digitar uma chave que apareceu em um site", dica: "Chaves de sites desconhecidos são pirataria e podem não funcionar. Use a licença do cliente." },
-    ],
-  },
-  {
-    tipo: "escolha", fase: 4, estilo: "win", titulo: "Selecione o sistema operacional", texto: "A licença digital deste notebook é do Windows 11 Pro.",
-    opcoes: [
-      { r: "Windows 11 Pro", ok: true },
-      { r: "Windows 11 Home", dica: "A licença é Pro. Instalar outra edição faz a ativação automática falhar." },
-    ],
-  },
-  {
-    tipo: "escolha", fase: 5, estilo: "win", titulo: "Termos de licença aplicáveis", texto: "Leia, marque a caixa e avance.",
-    opcoes: [
-      { r: "Marcar \"Aceito os termos de licença\" e avançar", ok: true },
-      { r: "Fechar sem aceitar", dica: "Sem aceitar os termos o instalador não continua." },
-    ],
-  },
-  {
-    tipo: "escolha", fase: 6, estilo: "win", titulo: "Que tipo de instalação você deseja?", texto: "Objetivo: instalação limpa, sem restos do sistema antigo.",
-    opcoes: [
-      { r: "Personalizada: instalar apenas o Windows (avançado)", ok: true },
-      { r: "Atualização: instalar o Windows e manter arquivos, configurações e aplicativos", dica: "Essa opção mantém o sistema antigo e seus problemas. Para formatar e começar do zero, use a Personalizada." },
-    ],
-  },
-  { tipo: "disco", fase: 7 },
-  { tipo: "copia", fase: 8 },
-  {
-    tipo: "escolha", fase: 9, estilo: "win", titulo: "Primeiro uso. Região", texto: "O computador já está no Windows novo. Qual é o seu país ou região?",
-    opcoes: [
-      { r: "Brasil", ok: true },
-      { r: "Estados Unidos", dica: "A região define moeda, idioma e serviços da loja." },
-    ],
-  },
-  {
-    tipo: "escolha", fase: 9, estilo: "win", titulo: "Primeiro uso. Rede", texto: "O escritório do cliente tem Wi-Fi.",
-    opcoes: [
-      { r: "Conectar à rede Wi-Fi do cliente", ok: true, boa: "Certo. Com internet, a licença ativa sozinha e o Windows baixa as atualizações." },
-      { r: "Pular a rede e ativar depois", dica: "Sem internet a licença digital não ativa sozinha e as atualizações não chegam. Conecte, se der." },
-    ],
-  },
-  {
-    tipo: "escolha", fase: 9, estilo: "win", titulo: "Primeiro uso. Quem vai usar o computador?", texto: "Defina o nome do usuário e a senha.",
-    opcoes: [
-      { r: "Usuário com o nome do cliente e senha forte", ok: true },
-      { r: "Usuário \"admin\" com a senha 123", dica: "Senha fraca e usuário genérico deixam o computador do cliente vulnerável." },
-    ],
-  },
-];
-
-function InstaladorSim() {
-  const [cen, setCen] = React.useState<Cenario | null>(null);
-  const [i, setI] = React.useState(0);
-  const [erros, setErros] = React.useState(0);
-  const [dica, setDica] = React.useState<string | null>(null);
-  const [boa, setBoa] = React.useState<string | null>(null);
-  const [fim, setFim] = React.useState<null | "ok" | "cancelou">(null);
-  const [prog, setProg] = React.useState(0);
-  const passo = PASSOS[i] ?? PASSOS[PASSOS.length - 1];
-
-  React.useEffect(() => {
-    if (i >= PASSOS.length) setFim("ok");
-  }, [i]);
-
-  React.useEffect(() => {
-    if (passo.tipo !== "copia" || i >= PASSOS.length || cen === null) return;
-    setProg(0);
-    const t = setInterval(() => setProg((p) => (p >= 100 ? 100 : p + 4)), 120);
-    return () => clearInterval(t);
-  }, [i, cen, passo.tipo]);
-
-  function reiniciar() {
-    setCen(null);
-    setI(0);
-    setErros(0);
-    setDica(null);
-    setBoa(null);
-    setFim(null);
-  }
-  function proximo() {
-    setDica(null);
-    setBoa(null);
-    setI((x) => x + 1);
-  }
-  function escolher(o: Op) {
-    if (o.ok) {
-      recordAnswer({ app: "info", category: "uc2a3-instalador", correct: true, timeMs: 0, points: 10 });
-      setDica(null);
-      if (o.boa) {
-        setBoa(o.boa);
-        setTimeout(proximo, 1400);
-      } else proximo();
-    } else {
-      setErros((e) => e + 1);
-      setDica(o.dica ?? "Essa não é a melhor escolha agora.");
-      recordAnswer({ app: "info", category: "uc2a3-instalador", correct: false, timeMs: 0, points: 0 });
-    }
-  }
-
-  if (cen === null)
-    return (
-      <div>
-        <Instrucao>Em dupla. Uma pessoa conduz o mouse e a outra confere o roteiro. Escolham o cenário e façam a instalação do começo ao fim. Cada escolha errada mostra uma dica e conta como erro.</Instrucao>
-        <SeletorCenario valor={null} onChange={(c) => setCen(c)} />
-        <p className="text-sm text-muted-foreground">Clique em um cenário para começar.</p>
-      </div>
-    );
-
-  if (fim) {
-    const total = erros;
-    return (
-      <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-5">
-        <Trophy className="h-10 w-10 text-amber-500" />
-        <p className="mt-2 text-xl font-bold">{fim === "ok" ? "Windows 11 instalado" : "Instalação cancelada na hora certa"}</p>
-        <p className="mt-1 text-muted-foreground">
-          {total} {total === 1 ? "erro" : "erros"} no total.{" "}
-          {total === 0 ? "Sem nenhum erro. Pode instalar de verdade." : total <= 3 ? "Bom resultado. Revise as dicas que apareceram." : "Jogue de novo e leia as dicas com calma."}
-        </p>
-        <details className="mt-4 rounded-xl border border-foreground/10 bg-white/50 p-3 text-sm dark:bg-white/5">
-          <summary className="cursor-pointer font-semibold">Colinha das telas do instalador</summary>
-          <ul className="mt-2 space-y-1.5">
-            {TELAS.map((t) => (
-              <li key={t.tela}>
-                <span className="font-semibold">{t.tela}.</span> {t.escolha} <span className="text-muted-foreground">({t.porque})</span>
-              </li>
-            ))}
-          </ul>
-        </details>
-        <div className="mt-4">
-          <BotaoSec onClick={reiniciar}>
-            <RotateCcw className="h-4 w-4" /> instalar de novo
-          </BotaoSec>
-        </div>
-      </div>
-    );
-  }
-
-  const fase = passo.fase;
-  return (
-    <div>
-      <div className="mb-3 flex flex-wrap gap-1.5">
-        {PASSOS_INSTALADOR.map((n, k) => (
-          <span key={n} className={cn("rounded-full px-2.5 py-1 text-xs font-medium", k === fase ? "bg-blue-600 text-white" : k < fase ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300" : "bg-foreground/5 text-muted-foreground")}>
-            {k + 1}. {n}
-          </span>
-        ))}
-        <span className="ml-auto text-xs text-muted-foreground">{erros} {erros === 1 ? "erro" : "erros"}</span>
-      </div>
-
-      {passo.tipo === "disco" && (
-        <div>
-          <p className="mb-3 text-sm text-muted-foreground">
-            {cen === "A" ? "O backup está no HD externo. Deixe o SSD limpo e avance." : "Fotos e contratos do cliente estão no SSD e não existe backup. Pense antes de clicar."}
-          </p>
-          <DiscoSim
-            key={cen}
-            cenario={cen}
-            categoria="uc2a3-instalador-disco"
-            onFim={(r) => {
-              setErros((e) => e + r.erros);
-              if (r.tipo === "ok") proximo();
-              else if (r.tipo === "cancelou") setFim("cancelou");
-            }}
-          />
-        </div>
-      )}
-
-      {passo.tipo === "copia" && (
-        <div className="overflow-hidden rounded-2xl border border-blue-900 bg-gradient-to-b from-blue-700 to-blue-900 p-6 text-white">
-          {prog < 100 ? (
-            <>
-              <p className="text-lg font-semibold">Instalando o Windows 11</p>
-              <p className="mt-1 text-sm text-blue-100">Copiando arquivos, instalando recursos e atualizações. O computador vai reiniciar sozinho.</p>
-              <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/20">
-                <div className="h-full bg-white transition-all" style={{ width: `${prog}%` }} />
-              </div>
-              <p className="mt-2 text-sm">{prog}%</p>
-            </>
-          ) : (
-            <>
-              <p className="rounded-lg bg-black/60 p-3 font-mono text-sm">Press any key to boot from CD or DVD... (Pressione qualquer tecla para inicializar do CD ou DVD)</p>
-              <p className="mt-4 text-sm text-blue-100">O computador reiniciou e mostra a mensagem acima por alguns segundos. O que você faz?</p>
-              <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                {[
-                  { r: "Não toco em nada", ok: true, boa: "Certo. O computador segue a instalação pelo disco." },
-                  { r: "Aperto uma tecla", dica: "Apertar reinicia o instalador pelo pendrive e a instalação recomeça." },
-                  { r: "Tiro o pendrive e desligo da tomada", dica: "Desligar no meio da instalação pode corromper o sistema." },
-                ].map((o) => (
-                  <button key={o.r} onClick={() => escolher(o)} className="rounded-xl border border-white/30 bg-white/10 px-3 py-3 text-left text-sm font-medium hover:bg-white/20">
-                    {o.r}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
-      {passo.tipo === "escolha" && (
-        <div className={cn("overflow-hidden rounded-2xl border", passo.estilo === "boot" ? "border-slate-700 bg-black text-white" : "border-blue-900 bg-gradient-to-b from-blue-700 to-blue-900 text-white")}>
-          <div className="p-5 md:p-7">
-            <p className={cn("text-lg font-semibold md:text-xl", passo.estilo === "boot" && "font-mono")}>{passo.titulo}</p>
-            {passo.texto && <p className="mt-1 text-sm text-blue-100/90">{passo.texto}</p>}
-            <div className="mt-4 grid gap-2">
-              {passo.opcoes.map((o) => (
-                <button
-                  key={o.r}
-                  onClick={() => escolher(o)}
-                  disabled={Boolean(boa)}
-                  className={cn("rounded-xl border px-4 py-3 text-left text-sm font-medium transition", passo.estilo === "boot" ? "border-slate-600 font-mono hover:bg-slate-800" : "border-white/30 bg-white/10 hover:bg-white/20")}
-                >
-                  {o.r}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="mt-3 min-h-[3rem]">
-        {dica && (
-          <p className="rounded-xl border border-red-500 bg-red-500/10 p-3 text-sm">
-            <span className="font-semibold">Erro.</span> {dica}
-          </p>
-        )}
-        {boa && (
-          <p className="rounded-xl border border-emerald-500 bg-emerald-500/10 p-3 text-sm">
-            <span className="font-semibold">Certo.</span> {boa}
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}
-
 /* ---------- Pendrive bootável ---------- */
 function PendriveOrdem() {
   const [fila, setFila] = React.useState(() => ETAPAS_PEN.map((e) => e.id));
@@ -1118,7 +528,7 @@ export function InfoEssencialUC2Aula2() {
             <span className="inline-flex items-center gap-2 rounded-full bg-blue-600/10 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-400/15 dark:text-blue-300">
               <Cpu className="h-3.5 w-3.5" /> Curso Informática Essencial. UC2
             </span>
-            <h1 className="mt-3 text-3xl font-bold tracking-tight md:text-5xl">Aula 2. Sábado de instalação</h1>
+            <h1 className="mt-3 text-3xl font-bold tracking-tight md:text-5xl">Aula 2. Formatar e Instalar Windows</h1>
             <p className="mt-2 max-w-2xl text-muted-foreground">
               Cinco animações, dois simuladores, seis atividades e materiais de apoio para criar o pendrive de instalação, cuidar do disco e das partições, passar pelas telas do instalador do Windows 11 e diagnosticar problemas de boot. Comece pelas animações.
             </p>
@@ -1154,8 +564,37 @@ export function InfoEssencialUC2Aula2() {
               </BotaoSec>
             </div>
             {aba === "videos" && <Animacoes />}
-            {aba === "inst" && <InstaladorSim />}
-            {aba === "fmt" && <SimuladorFormatacao />}
+            {aba === "inst" && (
+              <div>
+                <Instrucao>
+                  Em dupla: uma pessoa opera o notebook e a outra lê a ordem de serviço. Ligue o notebook e faça o serviço do começo ao fim, como na bancada. O simulador não avisa os erros na hora: ele age como um computador de verdade e, no fim, mostra o relatório do técnico.
+                </Instrucao>
+                <SimInstalacao />
+              </div>
+            )}
+            {aba === "fmt" && (
+              <div>
+                <Instrucao>
+                  Em dupla. Esta é a tela de partições do instalador do Windows 11, com as mesmas mensagens do computador. Em todas as missões o backup já está feito. Excluir e formatar apagam tudo, então confiram sempre a unidade antes de clicar.
+                </Instrucao>
+                <SimParticoes />
+                <details className="mt-5 rounded-2xl border border-foreground/10 bg-white/40 p-4 text-sm dark:bg-white/5">
+                  <summary className="cursor-pointer font-semibold">O que o instalador cria sozinho no espaço não alocado</summary>
+                  <div className="mt-3 overflow-x-auto">
+                    <table className="w-full min-w-[480px] text-left">
+                      <thead className="text-muted-foreground">
+                        <tr><th className="py-1 pr-3 font-medium">Partição</th><th className="py-1 pr-3 font-medium">Tamanho</th><th className="py-1 pr-3 font-medium">Formato</th><th className="py-1 font-medium">Para quê</th></tr>
+                      </thead>
+                      <tbody>
+                        {PARTS_AUTO.map((p) => (
+                          <tr key={p.nome} className="border-t border-foreground/10"><td className="py-1.5 pr-3">{p.nome}</td><td className="py-1.5 pr-3">{p.tamanho}</td><td className="py-1.5 pr-3">{p.fs}</td><td className="py-1.5">{p.paraque}</td></tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              </div>
+            )}
             {aba === "pen" && <PendriveOrdem />}
             {aba === "j1" && <Quiz itens={ITENS_J1} categoria="uc2a3-telas" instrucao="Cada rodada mostra uma tela do instalador e uma situação. Escolha a opção certa sem chutar." />}
             {aba === "j2" && <Quiz itens={ITENS_J2} categoria="uc2a3-boot" instrucao="Em dupla. O computador não inicia pelo pendrive ou não instala. Discutam a causa mais provável antes de clicar." />}

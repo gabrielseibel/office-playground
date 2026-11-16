@@ -40,8 +40,8 @@ export const TELAS: { tela: string; escolha: string; porque: string }[] = [
  },
  {
   "tela": "Instalando",
-  "escolha": "Esperar. Se pedir uma tecla para iniciar pelo pendrive, não apertar",
-  "porque": "O computador reinicia várias vezes. Sem apertar a tecla, ele continua pelo disco."
+  "escolha": "Esperar. Se o pendrive estiver antes do SSD na ordem de boot, tirar o pendrive depois que os arquivos forem copiados. No DVD, não apertar tecla quando pedir",
+  "porque": "O computador reinicia várias vezes. Se iniciar pelo pendrive de novo, a instalação recomeça do zero."
  },
  {
   "tela": "Primeira configuração",

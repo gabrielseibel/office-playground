@@ -22,7 +22,7 @@ const GUIAS = {
       },
       {
         href: "/curso-informatica-essencial-uc2-aula-2",
-        titulo: "Aula 2. Sábado de instalação",
+        titulo: "Aula 2. Formatar e Instalar Windows",
         turma: "Xanxerê 2026.25.103",
         resumo: "Simuladores de instalação do Windows 11 e de formatação e partições, pendrive bootável, sistemas de arquivos e diagnóstico de boot.",
       },
