@@ -47,6 +47,12 @@ const GUIAS = {
         resumo: "Ameaças, golpes, firewall, senhas, criptografia, VPN e logs, em seis animações e sete atividades.",
       },
       {
+        href: "/curso-informatica-essencial-redes-aula-3",
+        titulo: "Redes, Aula 3. Oficina de Cabos",
+        turma: "Lajeado 2026.25.60",
+        resumo: "Crimpe cabos T568A e T568B, leia o testador, diagnostique defeitos e monte a rede de uma clínica em seis missões.",
+      },
+      {
         href: "/laboratorio-de-redes",
         titulo: "Laboratório de Redes",
         turma: "Simulador da UC3",

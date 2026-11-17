@@ -97,6 +97,12 @@ export default function Sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
     {
+      url: `${BASE_URL}/curso-informatica-essencial-redes-aula-3`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
       url: `${BASE_URL}/laboratorio-de-redes`,
       lastModified: now,
       changeFrequency: "monthly",
