@@ -36,7 +36,7 @@ const semInstavel = (av: Avaliacao) => av.links.every((l) => l.estado === "ok");
 
 export const MISSOES: Missao[] = [
   {
-    id: "m1", titulo: "O primeiro ponto", nivel: 1, escala: 0.06, orcamento: 60,
+    id: "m1", titulo: "O primeiro ponto", nivel: 1, escala: 0.03, orcamento: 70,
     historia: "Consultório novo. A operadora instalou o modem. Falta ligar o roteador e o computador da recepção para ter internet.",
     dica: "Modem LAN para a porta WAN do roteador. Depois uma porta LAN do roteador para o computador. Cabos diretos comuns.",
     conceitos: ["Cabo direto", "WAN x LAN", "DHCP"],
@@ -48,7 +48,7 @@ export const MISSOES: Missao[] = [
     ],
   },
   {
-    id: "m2", titulo: "A rede da recepção", nivel: 2, escala: 0.04, orcamento: 150,
+    id: "m2", titulo: "A rede da recepção", nivel: 2, escala: 0.025, orcamento: 190,
     historia: "Recepção com 3 computadores e uma impressora. O roteador só tem 4 portas LAN, então um switch precisa entrar.",
     dica: "O roteador entrega o IP (DHCP). Um switch liga os equipamentos, mas não cria rede sozinho: precisa estar ligado ao roteador.",
     conceitos: ["Switch", "Topologia em estrela", "Escolha do comprimento"],
@@ -61,11 +61,11 @@ export const MISSOES: Missao[] = [
     metas: [
       { texto: "Internet funcionando", ok: (av) => av.internet },
       { texto: "Os 3 PCs e a impressora online", ok: (av) => hostsOk(av, ["pc1", "pc2", "pc3", "imp"]) },
-      { texto: "Gastar no máximo R$ 150 em cabos", ok: (av) => av.custo <= 150 },
+      { texto: "Gastar no máximo R$ 190 em cabos", ok: (av) => av.custo <= 190 },
     ],
   },
   {
-    id: "m3", titulo: "Cabeamento estruturado e a regra dos 100 m", nivel: 3, escala: 0.25, orcamento: 120,
+    id: "m3", titulo: "Cabeamento estruturado e a regra dos 100 m", nivel: 3, escala: 0.25, orcamento: 130,
     historia: "Um prédio comercial. O cabeamento horizontal já está embutido: 60 m até a sala 1 e 88 m até a sala 2. Você liga o rack aos patch cords e às estações.",
     dica: "O canal completo (patch cord do rack + cabo embutido + patch cord da estação) tem no máximo 100 m. Na sala 2 já gastaram 88 m.",
     conceitos: ["Patch panel", "Canal de 100 m", "Patch cord"],
@@ -88,16 +88,16 @@ export const MISSOES: Missao[] = [
     ],
   },
   {
-    id: "m4", titulo: "Dois andares, um servidor e muita distância", nivel: 4, escala: 0.2, orcamento: 650,
+    id: "m4", titulo: "Dois andares, um servidor e muita distância", nivel: 4, escala: 0.2, orcamento: 900,
     historia: "O servidor do laboratório fica no andar de cima, longe do rack. A ligação direta passaria de 100 m. Existe um switch intermediário no corredor. A ligação entre os switches precisa de 10 Gbps para o backup noturno.",
     dica: "Nenhum cabo pode passar de 100 m. Quebre a distância usando o switch do corredor. Cat6 só faz 10 Gbps até cerca de 55 m. Mais que isso, só Cat6a.",
     conceitos: ["Limite de 100 m", "Cat6 x Cat6a", "Backbone"],
     disp: [
-      modem("modem", 40, 40), roteador("rot", 40, 170),
-      sw("sw1", "Switch do rack", 190, 170, 5, { mbps: 10000 }),
-      sw("sw2", "Switch do corredor", 540, 170, 5, { mbps: 10000 }),
-      { id: "srv", tipo: "servidor", nome: "Servidor do laboratório", x: 720, y: 90, portas: [P("srv-nic", "NIC", { mbps: 10000 })] },
-      pc("pc1", "PC do laboratório", 720, 290, { }),
+      modem("modem", 40, 40, "rack"), roteador("rot", 40, 170, "rack"),
+      sw("sw1", "Switch do rack", 190, 170, 5, { mbps: 10000 }, "rack"),
+      sw("sw2", "Switch do corredor", 540, 170, 5, { mbps: 10000 }, "lab"),
+      { id: "srv", tipo: "servidor", nome: "Servidor do laboratório", x: 720, y: 90, local: "lab", portas: [P("srv-nic", "NIC", { mbps: 10000 })] },
+      pc("pc1", "PC do laboratório", 720, 290, {}, "lab"),
     ],
     ligacoes: [],
     metas: [
@@ -107,12 +107,12 @@ export const MISSOES: Missao[] = [
     ],
   },
   {
-    id: "m5", titulo: "Equipamento legado: hub, switch antigo e crossover", nivel: 5, escala: 0.03, orcamento: 200,
+    id: "m5", titulo: "Equipamento legado: hub, switch antigo e crossover", nivel: 5, escala: 0.03, orcamento: 280,
     historia: "Um laboratório ainda usa um switch antigo (sem auto-MDIX) e uma impressora de 100 Mbps. O hub fica na bancada. Ligar errado derruba tudo.",
     dica: "Dois equipamentos iguais (MDIX com MDIX) sem auto-MDIX pedem crossover. Faça na Bancada ou compre pronto (mais caro). Cuidado com laços: dois caminhos entre os mesmos equipamentos geram tempestade de broadcast.",
     conceitos: ["MDI / MDIX", "Crossover", "Hub x Switch", "Loop"],
     disp: [
-      modem("modem", 50, 40), roteador("rot", 250, 40),
+      modem("modem", 50, 40), roteador("rot", 250, 40, undefined, 1),
       sw("swa", "Switch antigo (sem auto-MDIX)", 250, 200, 5, { auto: false, mbps: 100 }),
       { id: "hub", tipo: "hub", nome: "Hub 4 portas", x: 520, y: 200, portas: Array.from({ length: 4 }, (_, i) => P(`hub-p${i + 1}`, "P" + (i + 1), { classe: "MDIX", auto: false, mbps: 100 })) },
       { id: "imp", tipo: "impressora", nome: "Impressora antiga", x: 700, y: 330, portas: [P("imp-nic", "NIC", { auto: false, mbps: 100 })] },

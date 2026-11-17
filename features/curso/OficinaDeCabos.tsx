@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ChevronLeft, Cable, Wrench, Network, Maximize, Minimize, Star, RotateCcw, Check, X, TerminalSquare, Trash2, Eye } from "lucide-react";
+import { ChevronLeft, Cable, Wrench, Network, Maximize, Minimize, Star, RotateCcw, Check, X, TerminalSquare, Trash2, Eye, Play, FileText, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { recordAnswer } from "@/lib/progress";
 import {
@@ -12,12 +12,16 @@ import {
   type WireId, type Ponta, type Cabo, type Cat, type TipoCabo, type Ferramenta, type Ligacao, type Disp, type Porta,
 } from "@/lib/cabos";
 import { MISSOES, type Missao } from "@/lib/cabosMissoes";
+import { Tutoriais, Materiais, Videos } from "./OficinaTutoriais";
 
-type Modo = "bancada" | "diagnostico" | "rede";
+type Modo = "bancada" | "diagnostico" | "rede" | "tutoriais" | "materiais" | "apoio";
 const MODOS: { id: Modo; titulo: string; sub: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { id: "bancada", titulo: "Bancada de crimpagem", sub: "Monte o cabo", icon: Wrench },
   { id: "diagnostico", titulo: "Diagnóstico", sub: "Leia o testador", icon: Eye },
   { id: "rede", titulo: "Rede da clínica", sub: "Missões", icon: Network },
+  { id: "tutoriais", titulo: "Tutoriais animados", sub: "Veja como se faz", icon: Play },
+  { id: "materiais", titulo: "Materiais", sub: "Baixar e consultar", icon: FileText },
+  { id: "apoio", titulo: "Vídeos e leituras", sub: "Assistir aqui", icon: Video },
 ];
 
 const ESTOQUE_KEY = "op-cabos-estoque-v1";
@@ -900,7 +904,7 @@ export function OficinaDeCabos() {
         </div>
         <Botao tipo="sec" onClick={() => setFs((f) => !f)}>{fs ? <Minimize className="mr-1 inline h-4 w-4" /> : <Maximize className="mr-1 inline h-4 w-4" />}{fs ? "Sair da tela cheia" : "Tela cheia"}</Botao>
       </header>
-      <nav className="mb-5 grid gap-2 sm:grid-cols-3" aria-label="Modos">
+      <nav className="mb-5 grid gap-2 sm:grid-cols-3 lg:grid-cols-6" aria-label="Modos">
         {MODOS.map((m) => {
           const Icon = m.icon;
           return (
@@ -913,6 +917,9 @@ export function OficinaDeCabos() {
       {modo === "bancada" && <Bancada />}
       {modo === "diagnostico" && <Diagnostico />}
       {modo === "rede" && <Rede />}
+      {modo === "tutoriais" && <Tutoriais />}
+      {modo === "materiais" && <Materiais />}
+      {modo === "apoio" && <Videos />}
       <p className="mt-6 text-xs text-slate-500">Simulação didática. Valores de preço e distância são fictícios. Normas: ANSI/TIA-568 (T568A e T568B), canal de até 100 m.</p>
     </div>
   );
